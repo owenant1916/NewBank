@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Customer {
 	
 	private ArrayList<Account> accounts;
+	private String customerName;
 	
 	public Customer() {
 		accounts = new ArrayList<>();
@@ -20,5 +21,13 @@ public class Customer {
 
 	public void addAccount(Account account) {
 		accounts.add(account);		
+	}
+
+	public void setName(String name){
+		this.customerName = name;
+	}
+
+	public String getName(){
+		return this.customerName;
 	}
 }

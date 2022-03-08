@@ -1,13 +1,12 @@
 package newbank.server;
-
 import java.util.ArrayList;
 
-public class Customer {
+public class Customer extends User{
 	
 	private ArrayList<Account> accounts;
-	private String customerName;
 	
-	public Customer() {
+	public Customer(String name) {
+		super(name);
 		accounts = new ArrayList<>();
 	}
 	
@@ -23,11 +22,5 @@ public class Customer {
 		accounts.add(account);		
 	}
 
-	public void setName(String name){
-		this.customerName = name;
-	}
-
-	public String getName(){
-		return this.customerName;
-	}
+	public String getUserType() { return "customer";};
 }

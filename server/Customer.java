@@ -30,4 +30,6 @@ public class Customer {
 	public String getName(){
 		return this.customerName;
 	}
+
+	private String address;
 }

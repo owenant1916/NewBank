@@ -21,6 +21,7 @@ public class NewBankClientHandler extends Thread{
 	
 	public void run() {
 		// keep getting requests from the client and processing them
+		System.out.println(this.bank.findLoaner(55)); // testing findLoaner method
 		try {
 			// ask for user name
 			out.println("Enter Username");

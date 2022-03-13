@@ -4,7 +4,8 @@ import java.util.ArrayList;
 public class Customer extends User{
 	
 	private ArrayList<Account> accounts;
-	
+	private ArrayList<String> loans;
+
 	public Customer(String name) {
 		super(name);
 		accounts = new ArrayList<>();
@@ -23,4 +24,13 @@ public class Customer extends User{
 	}
 
 	public String getUserType() { return "customer";};
+
+	public ArrayList<Account> getAccounts() {
+		return accounts;
+	}
+
+	public void addLoan(String loanId) {
+		this.loans.add(loanId);
+	}
+
 }

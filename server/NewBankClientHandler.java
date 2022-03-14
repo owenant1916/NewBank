@@ -3,6 +3,9 @@ package newbank.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+//------Auto-check-in code - can be deleted later-------
+import java.io.FileReader;
+//------------------------------------------------------
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -10,12 +13,18 @@ public class NewBankClientHandler extends Thread{
 	
 	private NewBank bank;
 	private BufferedReader in;
+	//------Auto-check-in code - can be deleted later-------
+	private BufferedReader in_auto_checkin;
+	//------------------------------------------------------
 	private PrintWriter out;
 	
 	
 	public NewBankClientHandler(Socket s) throws IOException {
 		bank = NewBank.getBank();
 		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		//------Auto-check-in code - can be deleted later-------
+		in_auto_checkin = new BufferedReader(new FileReader("./src/newbank/testing/AutoCheckIn_UserCredentials"));
+		//------------------------------------------------------
 		out = new PrintWriter(s.getOutputStream(), true);
 	}
 	
@@ -32,10 +41,16 @@ public class NewBankClientHandler extends Thread{
 		try {
 			// ask for user name
 			out.println("Enter Username");
-			String userName = in.readLine();
+			//------Updated Auto-check-in code - can be reverted later-------
+			//String userName = in.readLine();
+			String userName = in_auto_checkin.readLine();
+			//---------------------------------------------------------------
 			// ask for password
 			out.println("Enter Password");
-			String password = in.readLine();
+			//------Updated Auto-check-in code - can be reverted later-------
+			//String password = in.readLine();
+			String password = in_auto_checkin.readLine();
+			//---------------------------------------------------------------
 			out.println("Checking Details...");
 			// authenticate user and get customer ID token from bank for use in subsequent requests
 			CustomerID customer = bank.checkLogInDetails(userName, password);

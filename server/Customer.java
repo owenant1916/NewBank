@@ -2,15 +2,15 @@ package newbank.server;
 import java.util.ArrayList;
 
 public class Customer extends User{
-	
 	private ArrayList<Account> accounts;
 	private ArrayList<String> loans;
 
 	public Customer(String name) {
 		super(name);
-		accounts = new ArrayList<>();
+		accounts = new ArrayList<Account>();
+		loans = new ArrayList<String>();
 	}
-	
+
 	public String accountsToString() {
 		String s = "";
 		for(Account a : accounts) {
@@ -27,6 +27,10 @@ public class Customer extends User{
 
 	public ArrayList<Account> getAccounts() {
 		return accounts;
+	}
+
+	public ArrayList<String> getLoans() {
+		return loans;
 	}
 
 	public void addLoan(String loanId) {

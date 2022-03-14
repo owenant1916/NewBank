@@ -11,10 +11,15 @@ public class NewBank {
 	private LoanLedger loanLedger;
 	
 	private NewBank() {
-		customers = new HashMap<>();
+		this.customers = new HashMap<>();
+		this.loanLedger = new LoanLedger();
 		addTestData();
 	}
-	
+
+	public LoanLedger getLoanLedger() {
+		return loanLedger;
+	}
+
 	private void addTestData() {
 		Customer bhagy = new Customer("Bhagy");
 		bhagy.addAccount(new Account("Main", 1000.0, "88305634"));
@@ -41,7 +46,7 @@ public class NewBank {
 	}
 
 	public void processLoan(double amount, String borrowerAccNum) {
-		String loanerAccNum = findLoaner(amount); // find loaner and remove money from their account
+		String loanerAccNum = findLoaner(amount, borrowerAccNum); // find loaner and remove money from their account
 		findAccountByNum(borrowerAccNum).setCurrentBalance(amount); // find borrower's account and add money to it
 
 		Loan newLoan = new Loan(loanerAccNum, borrowerAccNum, amount); // Create loan object with above info
@@ -52,14 +57,16 @@ public class NewBank {
 
 
 	// Searches for a suitable account to loan the money from
-	public String findLoaner(double amount) {
+	public String findLoaner(double amount, String borrowerAccNum) {
 		for(Map.Entry<String, Customer> set : customers.entrySet()) {
 			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
 			// iterate over arraylist to find an account with at least 10 * the loan amount
 			for(int i = 0; i < customerAccounts.size(); i++) {
 				if(customerAccounts.get(i).getCurrentBalance() > (amount * 10)) {
-					customerAccounts.get(i).setCurrentBalance(0 - amount); // update account balance of loaner
-					return customerAccounts.get(i).getAccountNum(); // return account num
+					if(!customerAccounts.get(i).getAccountNum().equals(borrowerAccNum)) { // check not borrower's account
+						customerAccounts.get(i).setCurrentBalance(0 - amount); // update account balance of loaner
+						return customerAccounts.get(i).getAccountNum(); // return account num
+					}
 				}
 			}
 		}

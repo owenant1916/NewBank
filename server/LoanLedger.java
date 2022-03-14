@@ -21,4 +21,8 @@ public class LoanLedger {
     public void addLoan(Loan loan) {
         this.loans.add(loan);
     }
+
+    public ArrayList<Loan> getLoans() {
+        return loans;
+    }
 }

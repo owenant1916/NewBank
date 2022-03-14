@@ -3,26 +3,26 @@ import java.util.UUID;
 
 public class Loan {
     private String loanId;
-    private String loanerAccName;
-    private String borrowerAccName;
+    private String loanerAccNum;
+    private String borrowerAccNum;
     private double amount;
 
-    public Loan(String loanerAccName, String borrowerAccName, double amount) {
+    public Loan(String loanerAccNum, String borrowerAccNum, double amount) {
         this.loanId = UUID.randomUUID().toString();
-        this.loanerAccName = loanerAccName;
-        this.borrowerAccName = borrowerAccName;
+        this.loanerAccNum = loanerAccNum;
+        this.borrowerAccNum = borrowerAccNum;
         this.amount = amount;
     }
 
     public String getLoanId() {
-        return loanId;
+        return this.loanId;
     }
 
-    public String getLoanerAccName() {
-        return loanerAccName;
+    public String getLoanerAccNum() {
+        return this.loanerAccNum;
     }
 
-    public String getBorrowerAccName() {
-        return borrowerAccName;
+    public String getBorrowerAccNum() {
+        return this.borrowerAccNum;
     }
 }

@@ -1,5 +1,8 @@
 package newbank.server;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,15 +12,77 @@ public class NewBank {
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
 	private LoanLedger loanLedger;
-	
+
+	//member variables to hold potential requests for both user types
+	private HashMap<Integer, String> customerRequests;
+	private HashMap<Integer, String> bankManagerRequests;
+
 	private NewBank() {
 		this.customers = new HashMap<>();
 		this.loanLedger = new LoanLedger();
 		addTestData();
+
+		//populate possible requests from customer request config files
+		BufferedReader customerRequestReader = null;
+		try {
+			customerRequestReader = new BufferedReader(new FileReader("./src/newbank/testing/CustomerRequests"));
+		}catch (IOException e){
+			e.printStackTrace();
+			System.out.println("Customer request file not found.");
+			System.exit(0);
+		}
+
+		try {
+			String line, key, processName;
+			this.customerRequests = new HashMap<Integer, String>();
+			while ((line = customerRequestReader.readLine()) != null) {
+				// process the line.
+				key = line.substring(1,2);
+				processName = line.substring(3, line.length()-1);
+				this.customerRequests.put(Integer.parseInt(key),processName);
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+			System.out.println("Failure reading customer request file.");
+			System.exit(0);
+		}
+
+		//populate possible requests from customer request config files
+		BufferedReader bankManagerRequestReader = null;
+		try {
+			bankManagerRequestReader = new BufferedReader(new FileReader("./src/newbank/testing/BankManagerRequests"));
+		}catch (IOException e){
+			e.printStackTrace();
+			System.out.println("Bank Manager request file not found.");
+			System.exit(0);
+		}
+
+		try {
+			String line, key, processName;
+			this.bankManagerRequests = new HashMap<Integer, String>();
+			while ((line = bankManagerRequestReader.readLine()) != null) {
+				// process the line.
+				key = line.substring(1,2);
+				processName = line.substring(3, line.length()-1);
+				this.bankManagerRequests.put(Integer.parseInt(key),processName);
+			}
+		}catch(IOException e){
+			e.printStackTrace();
+			System.out.println("Failure reading Bank Manager request file.");
+			System.exit(0);
+		}
 	}
 
 	public LoanLedger getLoanLedger() {
 		return loanLedger;
+	}
+
+	public HashMap<Integer, String> getCustomerRequests(){
+		return this.customerRequests;
+	}
+
+	public HashMap<Integer, String> getBankManagerRequests(){
+		return this.bankManagerRequests;
 	}
 
 	private void addTestData() {
@@ -103,10 +168,27 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(CustomerID customer, String request) {
-		if(customers.containsKey(customer.getKey())) {
-			switch(request) {
-			case "SHOWMYACCOUNTS" : return showMyAccounts(customer);
-			default : return "FAIL";
+		//TODO: make user type dependent on who logged in
+		String userType = "customer";
+		if (userType == "customer") {
+			if (customers.containsKey(customer.getKey())) {
+				switch (request) {
+					//needs to be maintained in sync with request files
+					case "1":
+						return showMyAccounts(customer);
+					//case "2" : return depositCash();
+					// case "3" : return withdrawCash();
+					default:
+						return "FAIL";
+				}
+			}
+		}else if(userType == "bank manager"){
+			switch (request) {
+				//needs to be maintained in sync with request files
+				//case "1": return createAccount();
+				//case "2" :return deleteAccount();
+				default:
+					return "FAIL";
 			}
 		}
 		return "FAIL";

@@ -8,6 +8,8 @@ import java.io.FileReader;
 //------------------------------------------------------
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Map;
+import java.util.HashMap;
 
 public class NewBankClientHandler extends Thread{
 	
@@ -23,7 +25,14 @@ public class NewBankClientHandler extends Thread{
 		bank = NewBank.getBank();
 		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		//------Auto-check-in code - can be deleted later-------
-		in_auto_checkin = new BufferedReader(new FileReader("./src/newbank/testing/AutoCheckIn_UserCredentials"));
+		try {
+			in_auto_checkin = new BufferedReader(
+					new FileReader("./src/newbank/testing/AutoCheckIn_UserCredentials"));
+		}catch(IOException e){
+			e.printStackTrace();
+			System.out.println("User credentials file not found.");
+			System.exit(0);
+		}
 		//------------------------------------------------------
 		out = new PrintWriter(s.getOutputStream(), true);
 	}
@@ -56,12 +65,13 @@ public class NewBankClientHandler extends Thread{
 			CustomerID customer = bank.checkLogInDetails(userName, password);
 			// if the user is authenticated then get requests from the user and process them 
 			if(customer != null) {
-				out.println("Log In Successful. What do you want to do?");
+				out.println("Log In Successful.");
+				interfaceDisplay(userName);
 				while(true) {
 					String request = in.readLine();
 					System.out.println("Request from " + customer.getKey());
-					String responce = bank.processRequest(customer, request);
-					out.println(responce);
+					String response = bank.processRequest(customer, request);
+					out.println(response);
 				}
 			}
 			else {
@@ -78,6 +88,26 @@ public class NewBankClientHandler extends Thread{
 				e.printStackTrace();
 				Thread.currentThread().interrupt();
 			}
+		}
+	}
+
+	//function to provide a nicer interface on the command line
+	private void interfaceDisplay(String userName){
+		out.println("Welcome " + userName + " to New Bank!");
+		out.println("Please choose from the following options.....");
+		//TODO: make user type dependent on who logged in
+		String userType = "customer";
+		//output possible requests based on user type
+		HashMap<Integer, String> requests = null;
+		if (userType == "bank manager"){
+			requests = bank.getBankManagerRequests();
+		}else if (userType == "customer"){
+			requests = bank.getCustomerRequests();
+		}
+		for (Map.Entry<Integer, String> entry : requests.entrySet()) {
+			Integer intKey = entry.getKey();
+			String process = entry.getValue();
+			out.println(intKey.toString() + "." + process);
 		}
 	}
 

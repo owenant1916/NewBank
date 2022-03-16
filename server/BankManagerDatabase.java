@@ -9,13 +9,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class BankManagerDatabase {
-  private HashMap<String,BankManager> bankManagers;
+  private HashMap<UserID, BankManager> bankManagers;
 
   public BankManagerDatabase(){
     //read in customer data as JSON files and create customer objects
     //JSON parser object to parse read file
     JSONParser jsonParser = new JSONParser();
-    bankManagers = new HashMap<String,BankManager>();
+    bankManagers = new HashMap<UserID,BankManager>();
 
     try {
       //Read JSON file
@@ -43,14 +43,14 @@ public class BankManagerDatabase {
     //get bank manager info
     String name = (String) managerObject.get("name");
     String password = (String) managerObject.get("password");
-    Integer staffID = Integer.parseInt((String) managerObject.get("staffID"));
+    String staffID = (String) managerObject.get("staff ID");
 
     //create bank manager object
     BankManager manager = new BankManager(name, password, staffID);
-    bankManagers.put(name, manager);
+    bankManagers.put(manager.getUserID(), manager);
   }
 
-  public HashMap<String,BankManager> getBankManagers(){
+  public HashMap<UserID,BankManager> getBankManagers(){
     return bankManagers;
   }
 }

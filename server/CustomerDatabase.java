@@ -9,13 +9,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class CustomerDatabase {
-  private HashMap<String,Customer> customers;
+  private HashMap<UserID,Customer> customers;
 
   public CustomerDatabase(){
     //read in customer data as JSON files and create customer objects
     //JSON parser object to parse read file
     JSONParser jsonParser = new JSONParser();
-    customers = new HashMap<String,Customer>();
+    customers = new HashMap<UserID,Customer>();
 
     try {
       //Read JSON file
@@ -43,16 +43,17 @@ public class CustomerDatabase {
     //get customer info
     String name = (String) customerObject.get("name");
     String password = (String) customerObject.get("password");
+    String customerID = (String) customerObject.get("customer ID");
     Integer age = Integer.parseInt((String) customerObject.get("age"));
     String address = (String) customerObject.get("address");
     Integer income = Integer.parseInt((String) customerObject.get("income"));
 
     //create customer object
-    Customer cust = new Customer(name, password, age, address, income);
-    customers.put(name, cust);
+    Customer cust = new Customer(name, password, customerID, age, address, income);
+    customers.put(cust.getUserID(), cust);
   }
 
-  public HashMap<String,Customer> getCustomers(){
+  public HashMap<UserID,Customer> getCustomers(){
     return customers;
   }
 }

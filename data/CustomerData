@@ -1,0 +1,31 @@
+[
+	{
+		"name": "Anthony",
+		"password": "hugo",
+		"age": "44",
+		"address": "olympus mons",
+		"income": "10000"
+	},
+	{
+		"name": "Jack",
+		"password": "nihao",		
+		"age": "26",
+		"address": "somewhere in china",
+		"income": "100000000"
+	},
+	{
+  		"name": "Anastasia",
+  		"password": "russel",
+  		"age": "28",
+  		"address": "somewhere near oxford?",
+  		"income": "5000"
+  	},
+  	{
+    		"name": "Ahmed",
+    		"password": "cards",
+    		"age": "29",
+    		"address": "no idea",
+    		"income": "2500"
+  	}
+]
+

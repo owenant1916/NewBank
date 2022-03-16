@@ -11,6 +11,7 @@ public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
 	private HashMap<String,Customer> customers;
+	private HashMap<String,BankManager> bankManagers;
 	private LoanLedger loanLedger;
 
 	//member variables to hold potential requests for both user types
@@ -19,6 +20,7 @@ public class NewBank {
 
 	private NewBank() {
 		this.customers = new HashMap<>();
+		this.bankManagers = new HashMap<>();
 		this.loanLedger = new LoanLedger();
 		addTestData();
 
@@ -86,17 +88,18 @@ public class NewBank {
 	}
 
 	private void addTestData() {
-		Customer bhagy = new Customer("Bhagy");
-		bhagy.addAccount(new Account("Main", 1000.0, "88305634"));
-		customers.put("Bhagy", bhagy);
-		
-		Customer christina = new Customer("Christina");
-		christina.addAccount(new Account("Savings", 1500.0, "46284039"));
-		customers.put("Christina", christina);
-		
-		Customer john = new Customer("John");
-		john.addAccount(new Account("Checking", 250.0, "00194762"));
-		customers.put("John", john);
+		//get customer data from database
+		CustomerDatabase customerDb = new CustomerDatabase();
+		customers = customerDb.getCustomers();
+
+		//get bank manager data from database
+		BankManagerDatabase managerDb = new BankManagerDatabase();
+		bankManagers = managerDb.getBankManagers();
+
+		//testing code for loan functionality
+		customers.get("Anthony").addAccount(new Account("Main", 1000.0, "88305634"));
+		customers.get("Jack").addAccount(new Account("Savings", 1500.0, "46284039"));
+		customers.get("Anastasia").addAccount(new Account("Checking", 250.0, "00194762"));
 	}
 	
 	public static NewBank getBank() {

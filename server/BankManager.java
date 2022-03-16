@@ -3,8 +3,8 @@ package newbank.server;
 public class BankManager extends User{
   private Integer staffID;
 
-  public BankManager(String name, Integer staffID){
-    super(name);
+  public BankManager(String name, String password, Integer staffID){
+    super(name,password);
     this.staffID = staffID;
   }
 

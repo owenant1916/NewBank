@@ -45,7 +45,7 @@ public class ExampleClient extends Thread{
 					bankServerOut.println(command);
 				}				
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				// TODO Auto-generated catch gvblock
 				e.printStackTrace();
 			}
 		}

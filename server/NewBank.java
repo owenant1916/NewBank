@@ -10,7 +10,8 @@ import java.util.Map;
 public class NewBank {
 	
 	private static final NewBank bank = new NewBank();
-	private HashMap<String,Customer> customers;
+	private HashMap<UserID,Customer> customers;
+	private HashMap<UserID,BankManager> bankManagers;
 	private LoanLedger loanLedger;
 
 	//member variables to hold potential requests for both user types
@@ -19,6 +20,7 @@ public class NewBank {
 
 	private NewBank() {
 		this.customers = new HashMap<>();
+		this.bankManagers = new HashMap<>();
 		this.loanLedger = new LoanLedger();
 		addTestData();
 
@@ -86,27 +88,39 @@ public class NewBank {
 	}
 
 	private void addTestData() {
-		Customer bhagy = new Customer("Bhagy");
-		bhagy.addAccount(new Account("Main", 1000.0, "88305634"));
-		customers.put("Bhagy", bhagy);
-		
-		Customer christina = new Customer("Christina");
-		christina.addAccount(new Account("Savings", 1500.0, "46284039"));
-		customers.put("Christina", christina);
-		
-		Customer john = new Customer("John");
-		john.addAccount(new Account("Checking", 250.0, "00194762"));
-		customers.put("John", john);
+		//get customer data from database
+		CustomerDatabase customerDb = new CustomerDatabase();
+		customers = customerDb.getCustomers();
+
+		//get bank manager data from database
+		BankManagerDatabase managerDb = new BankManagerDatabase();
+		bankManagers = managerDb.getBankManagers();
+
+		//testing code for loan functionality
+		customers.get(new UserID("1001")).addAccount(new Account("Main", 1000.0, "88305634"));
+		customers.get(new UserID("1002")).addAccount(new Account("Savings", 1500.0, "46284039"));
+		customers.get(new UserID("1003")).addAccount(new Account("Checking", 250.0, "00194762"));
 	}
 	
 	public static NewBank getBank() {
 		return bank;
 	}
 	
-	public synchronized CustomerID checkLogInDetails(String userName, String password) {
-		if(customers.containsKey(userName)) {
-			return new CustomerID(userName);
+	public synchronized User checkLogInDetails(String userName, String password) {
+		//check through customers for a match
+		for(Customer cust: customers.values()) {
+			if (cust.getName().equals(userName) && cust.getPassword().equals(password)) {
+				return cust;
+			}
 		}
+
+		//check through bank managers for a match
+		for(BankManager manager: bankManagers.values()) {
+			if (manager.getName().equals(userName) && manager.getPassword().equals(password)) {
+				return manager;
+			}
+		}
+
 		return null;
 	}
 
@@ -123,7 +137,7 @@ public class NewBank {
 
 	// Searches for a suitable account to loan the money from
 	public String findLoaner(double amount, String borrowerAccNum) {
-		for(Map.Entry<String, Customer> set : customers.entrySet()) {
+		for(Map.Entry<UserID, Customer> set : customers.entrySet()) {
 			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
 			// iterate over arraylist to find an account with at least 10 * the loan amount
 			for(int i = 0; i < customerAccounts.size(); i++) {
@@ -140,7 +154,7 @@ public class NewBank {
 
 	// method for finding an Account object but its account number
 	public Account findAccountByNum(String accountNum) {
-		for(Map.Entry<String, Customer> set : customers.entrySet()) {
+		for(Map.Entry<UserID, Customer> set : customers.entrySet()) {
 			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
 			for(int i = 0; i < customerAccounts.size(); i++) {
 				if(customerAccounts.get(i).getAccountNum() == accountNum) {
@@ -154,7 +168,7 @@ public class NewBank {
 
 	// Method for finding a customer by their account number
 	public Customer findCustomerByAcc(String accountNum) {
-		for(Map.Entry<String, Customer> set : customers.entrySet()) {
+		for(Map.Entry<UserID, Customer> set : customers.entrySet()) {
 			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
 			for(int i = 0; i < customerAccounts.size(); i++) {
 				if(customerAccounts.get(i).getAccountNum() == accountNum) {
@@ -167,7 +181,7 @@ public class NewBank {
 	};
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(CustomerID customer, String request) {
+	public synchronized String processRequest(UserID customer, String request) {
 		//TODO: make user type dependent on who logged in
 		String userType = "customer";
 		if (userType == "customer") {
@@ -194,7 +208,7 @@ public class NewBank {
 		return "FAIL";
 	}
 	
-	private String showMyAccounts(CustomerID customer) {
+	private String showMyAccounts(UserID customer) {
 		return (customers.get(customer.getKey())).accountsToString();
 	}
 

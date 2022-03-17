@@ -2,11 +2,20 @@ package newbank.server;
 import java.util.ArrayList;
 
 public class Customer extends User{
+	//customer info
+	private Integer age;
+	private String address;
+	private Integer income;
+
+	//customer account information
 	private ArrayList<Account> accounts;
 	private ArrayList<String> loans;
 
-	public Customer(String name) {
-		super(name);
+	public Customer(String name, String password, String customerID, Integer age, String address, Integer income) {
+		super(name,password, customerID);
+		this.age = age;
+		this.address = address;
+		this.income = income;
 		accounts = new ArrayList<Account>();
 		loans = new ArrayList<String>();
 	}
@@ -37,4 +46,15 @@ public class Customer extends User{
 		this.loans.add(loanId);
 	}
 
+	public String getAddress(){
+		return this.address;
+	}
+
+	public Integer getIncome(){
+		return this.income;
+	}
+
+	public Integer getAge(){
+		return this.age;
+	}
 }

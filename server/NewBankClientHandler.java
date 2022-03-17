@@ -61,16 +61,16 @@ public class NewBankClientHandler extends Thread{
 			String password = in_auto_checkin.readLine();
 			//---------------------------------------------------------------
 			out.println("Checking Details...");
-			// authenticate user and get customer ID token from bank for use in subsequent requests
-			CustomerID customer = bank.checkLogInDetails(userName, password);
+			// authenticate user and user object from bank for use in subsequent requests
+			User user = bank.checkLogInDetails(userName, password);
 			// if the user is authenticated then get requests from the user and process them 
-			if(customer != null) {
+			if(user != null) {
 				out.println("Log In Successful.");
-				interfaceDisplay(userName);
+				interfaceDisplay(user);
 				while(true) {
 					String request = in.readLine();
-					System.out.println("Request from " + customer.getKey());
-					String response = bank.processRequest(customer, request);
+					System.out.println("Request from " + user.getUserID().getKey());
+					String response = bank.processRequest(user.getUserID(), request);
 					out.println(response);
 				}
 			}
@@ -92,17 +92,19 @@ public class NewBankClientHandler extends Thread{
 	}
 
 	//function to provide a nicer interface on the command line
-	private void interfaceDisplay(String userName){
-		out.println("Welcome " + userName + " to New Bank!");
+	private void interfaceDisplay(User user){
+		out.println("Welcome " + user.getName() + " to New Bank!");
 		out.println("Please choose from the following options.....");
-		//TODO: make user type dependent on who logged in
-		String userType = "customer";
 		//output possible requests based on user type
 		HashMap<Integer, String> requests = null;
-		if (userType == "bank manager"){
+		if (user.getUserType() == "bank manager"){
 			requests = bank.getBankManagerRequests();
-		}else if (userType == "customer"){
+		}else if (user.getUserType() == "customer"){
 			requests = bank.getCustomerRequests();
+
+			//in the case of a customer logging in also display account balances
+			Customer castedUser = (Customer)user;
+			out.println(castedUser.accountsToString());
 		}
 		for (Map.Entry<Integer, String> entry : requests.entrySet()) {
 			Integer intKey = entry.getKey();

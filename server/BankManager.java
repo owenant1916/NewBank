@@ -1,11 +1,9 @@
 package newbank.server;
 
 public class BankManager extends User{
-  private Integer staffID;
 
-  public BankManager(String name, Integer staffID){
-    super(name);
-    this.staffID = staffID;
+  public BankManager(String name, String password, String staffID){
+    super(name,password, staffID);
   }
 
   public String getUserType(){return "bank manager";};

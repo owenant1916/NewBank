@@ -1,0 +1,35 @@
+[
+	{
+		"name": "Anthony",
+		"password": "hugo",
+		"customer ID": "1001",
+		"age": "44",
+		"address": "olympus mons",
+		"income": "10000"
+	},
+	{
+		"name": "Jack",
+		"password": "nihao",	
+		"customer ID": "1002",	
+		"age": "26",
+		"address": "somewhere in china",
+		"income": "100000000"
+	},
+	{
+  		"name": "Anastasia",
+  		"password": "russel",
+		"customer ID": "1003",
+  		"age": "28",
+  		"address": "somewhere near oxford?",
+  		"income": "5000"
+  	},
+  	{
+    		"name": "Ahmed",
+    		"password": "cards",
+		"customer ID": "1004",
+    		"age": "29",
+    		"address": "no idea",
+    		"income": "2500"
+  	}
+]
+

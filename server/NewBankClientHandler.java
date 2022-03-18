@@ -70,7 +70,7 @@ public class NewBankClientHandler extends Thread{
 				while(true) {
 					String request = in.readLine();
 					System.out.println("Request from " + user.getUserID().getKey());
-					String response = bank.processRequest(user.getUserID(), request);
+					String response = bank.processRequest(user, request);
 					out.println(response);
 				}
 			}

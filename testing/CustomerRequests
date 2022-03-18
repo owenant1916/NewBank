@@ -2,3 +2,4 @@
 (2,deposit cash)
 (3,withdraw cash)
 (4,request loan)
+(5,repay loan)

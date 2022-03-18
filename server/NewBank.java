@@ -181,22 +181,19 @@ public class NewBank {
 	};
 
 	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(UserID customer, String request) {
-		//TODO: make user type dependent on who logged in
-		String userType = "customer";
-		if (userType == "customer") {
-			if (customers.containsKey(customer.getKey())) {
-				switch (request) {
-					//needs to be maintained in sync with request files
-					case "1":
-						return showMyAccounts(customer);
-					//case "2" : return depositCash();
-					// case "3" : return withdrawCash();
-					default:
-						return "FAIL";
-				}
+	public synchronized String processRequest(User loggedInUser, String request) {
+		if (loggedInUser.getUserType().equals("customer")) {
+			switch (request) {
+				//needs to be maintained in sync with request files
+				case "1":
+					return showMyAccounts(loggedInUser.getUserID());
+				//case "2" : return depositCash();
+				// case "3" : return withdrawCash();
+				//case "5" : repayLoan(blah blah);
+				default:
+					return "FAIL";
 			}
-		}else if(userType == "bank manager"){
+		}else if(loggedInUser.getUserType().equals("bank manager")){
 			switch (request) {
 				//needs to be maintained in sync with request files
 				//case "1": return createAccount();
@@ -209,7 +206,7 @@ public class NewBank {
 	}
 	
 	private String showMyAccounts(UserID customer) {
-		return (customers.get(customer.getKey())).accountsToString();
+		return (customers.get(customer).accountsToString());
 	}
 
 }

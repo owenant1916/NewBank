@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class NewBank {
 	
@@ -124,14 +125,17 @@ public class NewBank {
 		return null;
 	}
 
-	public void processLoan(double amount, String borrowerAccNum) {
+	public String processLoan(double amount, String borrowerAccNum) {
+		Utilities utilities = new Utilities(customers); // created here for now so that it uses up-to-date customer info
 		String loanerAccNum = findLoaner(amount, borrowerAccNum); // find loaner and remove money from their account
-		findAccountByNum(borrowerAccNum).setCurrentBalance(amount); // find borrower's account and add money to it
-
+		utilities.findAccountByNum(borrowerAccNum).setCurrentBalance(amount); // find borrower's account and add money to it
 		Loan newLoan = new Loan(loanerAccNum, borrowerAccNum, amount); // Create loan object with above info
-		findCustomerByAcc(loanerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
-		findCustomerByAcc(borrowerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
+		utilities.findCustomerByAcc(loanerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
+		utilities.findCustomerByAcc(borrowerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
 		this.loanLedger.addLoan(newLoan); // Add to ledger
+		System.out.println("Success! Account: " + borrowerAccNum + "'s balance is now " +
+				utilities.findAccountByNum(borrowerAccNum).getCurrentBalance());
+		return "Account: " + borrowerAccNum + "'s balance is now " + utilities.findAccountByNum(borrowerAccNum).getCurrentBalance();
 	}
 
 
@@ -141,47 +145,19 @@ public class NewBank {
 			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
 			// iterate over arraylist to find an account with at least 10 * the loan amount
 			for(int i = 0; i < customerAccounts.size(); i++) {
-				if(customerAccounts.get(i).getCurrentBalance() > (amount * 10)) {
+				if(customerAccounts.get(i).getCurrentBalance() > (amount * 2)) // check account has enough {
 					if(!customerAccounts.get(i).getAccountNum().equals(borrowerAccNum)) { // check not borrower's account
 						customerAccounts.get(i).setCurrentBalance(0 - amount); // update account balance of loaner
 						return customerAccounts.get(i).getAccountNum(); // return account num
 					}
 				}
 			}
-		}
 		return null;
 	}
 
-	// method for finding an Account object but its account number
-	public Account findAccountByNum(String accountNum) {
-		for(Map.Entry<UserID, Customer> set : customers.entrySet()) {
-			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
-			for(int i = 0; i < customerAccounts.size(); i++) {
-				if(customerAccounts.get(i).getAccountNum() == accountNum) {
-					return customerAccounts.get(i);
-				}
-			}
-		}
-		System.out.println("This account does not exist.");
-		return null;
-	};
-
-	// Method for finding a customer by their account number
-	public Customer findCustomerByAcc(String accountNum) {
-		for(Map.Entry<UserID, Customer> set : customers.entrySet()) {
-			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
-			for(int i = 0; i < customerAccounts.size(); i++) {
-				if(customerAccounts.get(i).getAccountNum() == accountNum) {
-					return set.getValue();
-				}
-			}
-		}
-		System.out.println("This account does not exist.");
-		return null;
-	};
-
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(User loggedInUser, String request) {
+		Scanner myObj = new Scanner(System.in);
 		if (loggedInUser.getUserType().equals("customer")) {
 			switch (request) {
 				//needs to be maintained in sync with request files
@@ -189,6 +165,14 @@ public class NewBank {
 					return showMyAccounts(loggedInUser.getUserID());
 				//case "2" : return depositCash();
 				// case "3" : return withdrawCash();
+				case "4":
+					System.out.println("Enter the account number of the account you wish to deposit money into");
+					String borrowerAccNum = myObj.nextLine().toString();
+
+					System.out.println("Enter the amount you wish to borrow");
+					Double amount = myObj.nextDouble();
+					myObj.close();
+					return processLoan(amount, "00194762");
 				//case "5" : repayLoan(blah blah);
 				default:
 					return "FAIL";

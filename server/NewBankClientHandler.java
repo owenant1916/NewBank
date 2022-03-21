@@ -22,7 +22,7 @@ public class NewBankClientHandler extends Thread{
 	
 	
 	public NewBankClientHandler(Socket s) throws IOException {
-		bank = NewBank.getBank();
+		bank = bank.getBank();
 		in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		//------Auto-check-in code - can be deleted later-------
 		try {
@@ -39,14 +39,6 @@ public class NewBankClientHandler extends Thread{
 	
 	public void run() {
 		// keep getting requests from the client and processing them
-		System.out.println(bank.findCustomerByAcc("46284039").getAccounts().get(0).getCurrentBalance());
-		System.out.println(bank.findCustomerByAcc("46284039").getLoans());
-		System.out.println(bank.findCustomerByAcc("88305634").getLoans());
-		bank.processLoan(120, "88305634");
-		System.out.println(bank.findCustomerByAcc("46284039").getAccounts().get(0).getCurrentBalance());
-		System.out.println(bank.findCustomerByAcc("46284039").getLoans());
-		System.out.println(bank.findCustomerByAcc("88305634").getLoans());
-		System.out.println(bank.getLoanLedger().getLoans().get(0).getBorrowerAccNum());
 		try {
 			// ask for user name
 			out.println("Enter Username");

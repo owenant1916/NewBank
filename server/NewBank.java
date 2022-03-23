@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class NewBank {
 	
@@ -124,14 +125,18 @@ public class NewBank {
 		return null;
 	}
 
-	public void processLoan(double amount, String borrowerAccNum) {
+	public String processLoan(double amount, String borrowerAccNum) {
+		Utilities utilities = new Utilities(customers); // created here for now so that it uses up-to-date customer info
 		String loanerAccNum = findLoaner(amount, borrowerAccNum); // find loaner and remove money from their account
-		findAccountByNum(borrowerAccNum).setCurrentBalance(amount); // find borrower's account and add money to it
-
+		utilities.findAccountByNum(borrowerAccNum).setCurrentBalance(amount); // find borrower's account and add money to it
 		Loan newLoan = new Loan(loanerAccNum, borrowerAccNum, amount); // Create loan object with above info
-		findCustomerByAcc(loanerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
-		findCustomerByAcc(borrowerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
+		utilities.findCustomerByAcc(loanerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
+		utilities.findCustomerByAcc(borrowerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
 		this.loanLedger.addLoan(newLoan); // Add to ledger
+		System.out.println("Success! " + utilities.findAccountByNum(borrowerAccNum).getAccountName()
+				+ " balance is now " + utilities.findAccountByNum(borrowerAccNum).getCurrentBalance());
+		return utilities.findAccountByNum(borrowerAccNum).getAccountName() + " balance is now " +
+				utilities.findAccountByNum(borrowerAccNum).getCurrentBalance();
 	}
 
 
@@ -141,47 +146,20 @@ public class NewBank {
 			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
 			// iterate over arraylist to find an account with at least 10 * the loan amount
 			for(int i = 0; i < customerAccounts.size(); i++) {
-				if(customerAccounts.get(i).getCurrentBalance() > (amount * 10)) {
+				if(customerAccounts.get(i).getCurrentBalance() > (amount * 2)) // check account has enough {
 					if(!customerAccounts.get(i).getAccountNum().equals(borrowerAccNum)) { // check not borrower's account
 						customerAccounts.get(i).setCurrentBalance(0 - amount); // update account balance of loaner
 						return customerAccounts.get(i).getAccountNum(); // return account num
 					}
 				}
 			}
-		}
 		return null;
 	}
 
-	// method for finding an Account object but its account number
-	public Account findAccountByNum(String accountNum) {
-		for(Map.Entry<UserID, Customer> set : customers.entrySet()) {
-			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
-			for(int i = 0; i < customerAccounts.size(); i++) {
-				if(customerAccounts.get(i).getAccountNum() == accountNum) {
-					return customerAccounts.get(i);
-				}
-			}
-		}
-		System.out.println("This account does not exist.");
-		return null;
-	};
-
-	// Method for finding a customer by their account number
-	public Customer findCustomerByAcc(String accountNum) {
-		for(Map.Entry<UserID, Customer> set : customers.entrySet()) {
-			ArrayList<Account> customerAccounts = set.getValue().getAccounts();
-			for(int i = 0; i < customerAccounts.size(); i++) {
-				if(customerAccounts.get(i).getAccountNum() == accountNum) {
-					return set.getValue();
-				}
-			}
-		}
-		System.out.println("This account does not exist.");
-		return null;
-	};
-
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(User loggedInUser, String request) {
+		Scanner myScanner = new Scanner(System.in);
+		ArrayList<Account> accounts = customers.get(loggedInUser.getUserID()).getAccounts();
 		if (loggedInUser.getUserType().equals("customer")) {
 			switch (request) {
 				//needs to be maintained in sync with request files
@@ -189,7 +167,20 @@ public class NewBank {
 					return showMyAccounts(loggedInUser.getUserID());
 				//case "2" : return depositCash();
 				// case "3" : return withdrawCash();
-				//case "5" : repayLoan(blah blah);
+				case "4":
+					// User chooses an account
+					System.out.println("Select the account from which you wish to request a loan");
+					for(int i = 0; i < accounts.size(); i++) {
+						System.out.println((i + 1) + " - " + accounts.get(i).toString()); // added 1 sp
+					}
+					int account = myScanner.nextInt();
+
+					// User enters loan amount
+					System.out.println("Enter the requested loan amount");
+					Double amount = myScanner.nextDouble();
+					myScanner.close();
+					return processLoan(amount, accounts.get(account - 1).getAccountNum());
+//				case "5": repay loan
 				default:
 					return "FAIL";
 			}

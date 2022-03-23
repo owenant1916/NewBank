@@ -133,9 +133,10 @@ public class NewBank {
 		utilities.findCustomerByAcc(loanerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
 		utilities.findCustomerByAcc(borrowerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
 		this.loanLedger.addLoan(newLoan); // Add to ledger
-		System.out.println("Success! Account: " + borrowerAccNum + "'s balance is now " +
-				utilities.findAccountByNum(borrowerAccNum).getCurrentBalance());
-		return "Account: " + borrowerAccNum + "'s balance is now " + utilities.findAccountByNum(borrowerAccNum).getCurrentBalance();
+		System.out.println("Success! " + utilities.findAccountByNum(borrowerAccNum).getAccountName()
+				+ " balance is now " + utilities.findAccountByNum(borrowerAccNum).getCurrentBalance());
+		return utilities.findAccountByNum(borrowerAccNum).getAccountName() + " balance is now " +
+				utilities.findAccountByNum(borrowerAccNum).getCurrentBalance();
 	}
 
 
@@ -157,7 +158,8 @@ public class NewBank {
 
 	// commands from the NewBank customer are processed in this method
 	public synchronized String processRequest(User loggedInUser, String request) {
-		Scanner myObj = new Scanner(System.in);
+		Scanner myScanner = new Scanner(System.in);
+		ArrayList<Account> accounts = customers.get(loggedInUser.getUserID()).getAccounts();
 		if (loggedInUser.getUserType().equals("customer")) {
 			switch (request) {
 				//needs to be maintained in sync with request files
@@ -166,14 +168,19 @@ public class NewBank {
 				//case "2" : return depositCash();
 				// case "3" : return withdrawCash();
 				case "4":
-					System.out.println("Enter the account number of the account you wish to deposit money into");
-					String borrowerAccNum = myObj.nextLine().toString();
+					// User chooses an account
+					System.out.println("Select the account from which you wish to request a loan");
+					for(int i = 0; i < accounts.size(); i++) {
+						System.out.println((i + 1) + " - " + accounts.get(i).toString()); // added 1 sp
+					}
+					int account = myScanner.nextInt();
 
-					System.out.println("Enter the amount you wish to borrow");
-					Double amount = myObj.nextDouble();
-					myObj.close();
-					return processLoan(amount, "00194762");
-				//case "5" : repayLoan(blah blah);
+					// User enters loan amount
+					System.out.println("Enter the requested loan amount");
+					Double amount = myScanner.nextDouble();
+					myScanner.close();
+					return processLoan(amount, accounts.get(account - 1).getAccountNum());
+//				case "5": repay loan
 				default:
 					return "FAIL";
 			}

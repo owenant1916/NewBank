@@ -31,4 +31,12 @@ public class Account {
 	public String getAccountNum() {
 		return accountNum;
 	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public ArrayList<String> getLoans() {
+		return loans;
+	}
 }

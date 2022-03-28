@@ -1,0 +1,26 @@
+[
+	{
+		"account name": "Main",
+		"account ID": "88305634",
+		"opening balance": "1000",
+		"current balance": "1000",
+		"deposit transactions": [],
+		"withdrawal transactions": [],
+	},
+	{
+  		"account name": "Savngs",
+  		"account ID": "46284039",
+  		"opening balance": "1500",
+  		"current balance": "1500",
+  		"deposit transactions": [],
+  		"withdrawal transactions": [],
+  	},
+    {
+        "account name": "Checking",
+        "account ID": "00194762",
+        "opening balance": "250",
+        "current balance": "250",
+        "deposit transactions": [],
+        "withdrawal transactions": [],
+     }
+]

@@ -25,8 +25,8 @@ public class BankManagerDatabase {
       JSONArray managerList = (JSONArray) obj;
       System.out.println(managerList);
 
-      //Iterate over employee array
-      managerList.forEach( emp -> parseBankManager( (JSONObject) emp ) );
+      //Iterate over bank manager array
+      managerList.forEach( manager -> parseBankManager( (JSONObject) manager ) );
 
     }catch (IOException e){
       e.printStackTrace();

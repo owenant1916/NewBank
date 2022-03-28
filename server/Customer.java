@@ -7,16 +7,17 @@ public class Customer extends User{
 	private String address;
 	private Integer income;
 
-	//customer account information
+	//customer account information, accounts indexed by account number and list of associated loans
 	private ArrayList<Account> accounts;
 	private ArrayList<String> loans;
 
-	public Customer(String name, String password, String customerID, Integer age, String address, Integer income) {
+	public Customer(String name, String password, String customerID, Integer age, String address,
+			Integer income, ArrayList<Account> accounts) {
 		super(name,password, customerID);
 		this.age = age;
 		this.address = address;
 		this.income = income;
-		accounts = new ArrayList<Account>();
+		this.accounts = accounts;
 		loans = new ArrayList<String>();
 	}
 

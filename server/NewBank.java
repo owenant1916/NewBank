@@ -23,7 +23,7 @@ public class NewBank {
 		this.customers = new HashMap<>();
 		this.bankManagers = new HashMap<>();
 		this.loanLedger = new LoanLedger();
-		addTestData();
+		loadData();
 
 		//populate possible requests from customer request config files
 		BufferedReader customerRequestReader = null;
@@ -88,7 +88,7 @@ public class NewBank {
 		return this.bankManagerRequests;
 	}
 
-	private void addTestData() {
+	private void loadData() {
 		//get customer data from database
 		CustomerDatabase customerDb = new CustomerDatabase();
 		customers = customerDb.getCustomers();
@@ -96,11 +96,6 @@ public class NewBank {
 		//get bank manager data from database
 		BankManagerDatabase managerDb = new BankManagerDatabase();
 		bankManagers = managerDb.getBankManagers();
-
-		//testing code for loan functionality
-		customers.get(new UserID("1001")).addAccount(new Account("Main", 1000.0, "88305634"));
-		customers.get(new UserID("1002")).addAccount(new Account("Savings", 1500.0, "46284039"));
-		customers.get(new UserID("1003")).addAccount(new Account("Checking", 250.0, "00194762"));
 	}
 	
 	public static NewBank getBank() {

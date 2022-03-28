@@ -6,6 +6,7 @@
 		"age": "44",
 		"address": "olympus mons",
 		"income": "10000"
+		"accounts" : ["88305634"],
 	},
 	{
 		"name": "Jack",
@@ -13,7 +14,8 @@
 		"customer ID": "1002",	
 		"age": "26",
 		"address": "somewhere in china",
-		"income": "100000000"
+		"income": "100000000",
+		"accounts" : ["46284039"],
 	},
 	{
   		"name": "Anastasia",
@@ -21,7 +23,8 @@
 		"customer ID": "1003",
   		"age": "28",
   		"address": "somewhere near oxford?",
-  		"income": "5000"
+  		"income": "5000",
+  		"accounts" : ["00194762"],
   	},
   	{
     		"name": "Ahmed",
@@ -29,7 +32,7 @@
 		"customer ID": "1004",
     		"age": "29",
     		"address": "no idea",
-    		"income": "2500"
+    		"income": "2500",
+    		"accounts" : [],
   	}
 ]
-

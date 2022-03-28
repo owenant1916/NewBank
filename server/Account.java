@@ -24,17 +24,21 @@ public class Account {
 		this.deposits = deposits;
 		this.withdrawals = withdrawals;
 	}
-	
+
 	public String toString() {
-		return (accountName + ": " + openingBalance);
+		return (accountName + ": " + currentBalance);
 	}
 
 	public double getCurrentBalance() {
 		return currentBalance;
 	}
 
+	public double getOpeningBalance() {
+		return openingBalance;
+	}
+
 	public void setCurrentBalance(double currentBalance) {
-		this.currentBalance += currentBalance;
+		this.currentBalance = currentBalance;
 	}
 
 	public String getAccountNum() {
@@ -49,15 +53,39 @@ public class Account {
 		return loans;
 	}
 
-	public void deposit(Double depositAmt)
+	public void deposit(double depositAmt)
 	{
 		this.currentBalance += depositAmt;
 		this.deposits.add(depositAmt);
+
+		//update account in account database
+		AccountDatabase accDb = new AccountDatabase();
+		accDb.update(this);
 	}
 
-	public void withdrawal(Double withdrawalAmt)
+	public void withdraw(double withdrawalAmt)
 	{
 		this.currentBalance -= withdrawalAmt;
 		this.withdrawals.add(withdrawalAmt);
+
+		//update account in account database
+		AccountDatabase accDb = new AccountDatabase();
+		accDb.update(this);
+	}
+
+	public ArrayList<Double> getDepositsHistory() {
+		return deposits;
+	}
+
+	public ArrayList<Double> getWithdrawalsHistory() {
+		return withdrawals;
+	}
+
+	public void setDepositsHistory(ArrayList<Double> deposits) {
+		this.deposits = deposits;
+	}
+
+	public void setWithdrawalsHistory(ArrayList<Double> withdrawals) {
+		this.withdrawals = withdrawals;
 	}
 }

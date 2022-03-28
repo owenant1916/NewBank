@@ -23,7 +23,6 @@ public class BankManagerDatabase {
       Object obj = jsonParser.parse(reader);
 
       JSONArray managerList = (JSONArray) obj;
-      System.out.println(managerList);
 
       //Iterate over bank manager array
       managerList.forEach( manager -> parseBankManager( (JSONObject) manager ) );

@@ -160,8 +160,8 @@ public class NewBank {
 				//needs to be maintained in sync with request files
 				case "1":
 					return showMyAccounts(loggedInUser.getUserID());
-				//case "2" : return depositCash();
-				// case "3" : return withdrawCash();
+				case "2" : return depositCash(loggedInUser);
+				case "3" : return withdrawCash(loggedInUser);
 				case "4":
 					// User chooses an account
 					System.out.println("Select the account from which you wish to request a loan");
@@ -195,4 +195,55 @@ public class NewBank {
 		return (customers.get(customer).accountsToString());
 	}
 
+	private String depositCash(User customer) {
+		Scanner myScanner = new Scanner(System.in);
+
+		//ask customer to choose account
+		System.out.println("Select the account you wish to deposit cash:");
+		Customer cust = (Customer) customer;
+		ArrayList<Account> custAccounts = cust.getAccounts();
+		for(int i = 0; i < custAccounts.size(); i++) {
+			System.out.println((i + 1) + " - " + custAccounts.get(i).toString()); // added 1 sp
+		}
+		int selection = myScanner.nextInt();
+
+		//ask for deposit amount
+		System.out.println("Enter the deposit amount");
+		Double depositAmt = myScanner.nextDouble();
+		myScanner.close();
+
+		//add amount to account and also into database and register deposit transaction
+		boolean cashDeposited = cust.depositInAccount(depositAmt, custAccounts.get(selection-1).getAccountNum());
+		if (cashDeposited) {
+			return "Cash deposited.";
+		}else{
+			return "FAIL";
+		}
+	}
+
+	private String withdrawCash(User customer) {
+		Scanner myScanner = new Scanner(System.in);
+
+		//ask customer to choose account
+		System.out.println("Select the account you wish to withdraw cash from:");
+		Customer cust = (Customer) customer;
+		ArrayList<Account> custAccounts = cust.getAccounts();
+		for(int i = 0; i < custAccounts.size(); i++) {
+			System.out.println((i + 1) + " - " + custAccounts.get(i).toString()); // added 1 sp
+		}
+		int selection = myScanner.nextInt();
+
+		//ask for deposit amount
+		System.out.println("Enter the withdrawal amount");
+		Double withdrawalAmt = myScanner.nextDouble();
+		myScanner.close();
+
+		//add amount to account and also into database and register deposit transaction
+		boolean cashWithdrawn = cust.withdrawFromAccount(withdrawalAmt, custAccounts.get(selection-1).getAccountNum());
+		if (cashWithdrawn) {
+			return "Cash withdrawn.";
+		}else{
+			return "FAIL";
+		}
+	}
 }

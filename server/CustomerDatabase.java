@@ -29,7 +29,6 @@ public class CustomerDatabase {
       Object obj = jsonParser.parse(reader);
 
       JSONArray customerList = (JSONArray) obj;
-      System.out.println(customerList);
 
       //Iterate over customer array
       customerList.forEach( cust -> parseCustomer( (JSONObject) cust, accountsData ) );

@@ -1,6 +1,7 @@
 package newbank.server;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,6 @@ public class AccountDatabase {
       Object obj = jsonParser.parse(reader);
 
       JSONArray accountList = (JSONArray) obj;
-      System.out.println(accountList);
 
       //Iterate over account array
       accountList.forEach( acc -> parseAccount( (JSONObject) acc) );
@@ -45,20 +45,57 @@ public class AccountDatabase {
     //get account info
     String accName = (String) accountObject.get("account name");
     String accNum = (String) accountObject.get("account ID");
-    String openingBalance = (String) accountObject.get("opening balance");
-    String currentBalance = (String) accountObject.get("current balance");
+    double openingBalance = (double) accountObject.get("opening balance");
+    double currentBalance = (double) accountObject.get("current balance");
     ArrayList<Double> deposits = new ArrayList<Double>();
     deposits = (ArrayList<Double>) accountObject.get("deposit transactions");
     ArrayList<Double> withdrawals = new ArrayList<Double>();
     withdrawals = (ArrayList<Double>) accountObject.get("withdrawal transactions");
 
     //create account object
-    Account acc = new Account(accName, accNum, Double.parseDouble(openingBalance),
-      Double.parseDouble(currentBalance), deposits, withdrawals);
+    Account acc = new Account(accName, accNum, openingBalance, currentBalance, deposits, withdrawals);
     accounts.put(accNum, acc);
   }
 
   public HashMap<String,Account> getAccounts(){
     return this.accounts;
+  }
+
+  //update a database entry for a given account
+  public boolean update(Account changedAcc){
+    //first we update the accounts hashmap
+    if (accounts.containsKey(changedAcc.getAccountNum())){
+      Account accToBeModified = accounts.get(changedAcc.getAccountNum());
+      accToBeModified.setCurrentBalance(changedAcc.getCurrentBalance());
+      accToBeModified.setDepositsHistory(changedAcc.getDepositsHistory());
+      accToBeModified.setWithdrawalsHistory(changedAcc.getWithdrawalsHistory());
+    } else{
+      return false;
+    }
+    //secondly we output the whole accounts hashmap to a JSON file
+    JSONArray accountList = new JSONArray();
+
+    for (HashMap.Entry<String, Account> acc : accounts.entrySet()){
+      JSONObject accObject = new JSONObject();
+      accObject.put("account name", acc.getValue().getAccountName());
+      accObject.put("account ID", acc.getValue().getAccountNum());
+      accObject.put("opening balance", acc.getValue().getOpeningBalance());
+      accObject.put("current balance", acc.getValue().getCurrentBalance());
+      accObject.put("deposit transactions", acc.getValue().getDepositsHistory());
+      accObject.put("withdrawal transactions", acc.getValue().getWithdrawalsHistory());
+      accountList.add(accObject);
+    }
+
+    //Write JSON file
+    try (FileWriter file = new FileWriter("./src/newbank/data/AccountData")) {
+      file.write(accountList.toJSONString());
+      file.flush();
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.out.println("Account data file failed to update.");
+      System.exit(0);
+    }
+    return true;
   }
 }

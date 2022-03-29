@@ -58,4 +58,28 @@ public class Customer extends User{
 	public Integer getAge(){
 		return this.age;
 	}
+
+	public boolean depositInAccount(double depositAmt, String accountNum){
+		//loop through accounts belonging to customer, find the correct account
+		//and deposit the cash
+		for (int i=0; i < accounts.size(); i++) {
+			if (accounts.get(i).getAccountNum().equals(accountNum)) {
+				accounts.get(i).deposit(depositAmt);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean withdrawFromAccount(double withdrawalAmt, String accountNum){
+		//loop through accounts belonging to customer, find the correct account
+		//and withdraw the cash
+		for (int i=0; i < accounts.size(); i++) {
+			if (accounts.get(i).getAccountNum().equals(accountNum)) {
+				accounts.get(i).withdraw(withdrawalAmt);
+				return true;
+			}
+		}
+		return false;
+	}
 }

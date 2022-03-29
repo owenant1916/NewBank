@@ -1,6 +1,8 @@
 package newbank.server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 //------Auto-check-in code - can be deleted later-------
@@ -63,6 +65,7 @@ public class NewBankClientHandler extends Thread{
 							case "3" : withdrawCash_Interface(loggedInUser); break;
 							case "4":  Loan_Interface(loggedInUser); break;
 							//case "5" : repay loan
+							case "6": transactionStatement_Interface(loggedInUser); break;
 				    default:
 							System.out.println("FAIL");
 						}
@@ -181,6 +184,50 @@ public class NewBankClientHandler extends Thread{
 
 		String response = bank.Loan_process(amount, accounts.get(account-1).getAccountNum());
 		out.println(response);
+	}
+
+	private void transactionStatement_Interface(User user){
+		Customer cust = (Customer) user;
+		//output transactions to screen and file
+		ArrayList<Account> accounts = cust.getAccounts();
+		//Write JSON file
+		try (BufferedWriter file = new BufferedWriter(new FileWriter("./out/TransactionHistory"))) {
+			for (int i = 0; i < accounts.size(); i++) {
+				//output account name
+				String accName = accounts.get(i).getAccountName() + ":";
+				out.println(accName);
+				file.write(accName);
+				file.newLine();
+				//output deposits
+				out.println("Deposits");
+				file.write("Deposits");
+				file.newLine();
+				out.println(accounts.get(i).getDepositsHistory());
+				ArrayList<Double> depositHist = accounts.get(i).getDepositsHistory();
+				String deposits = "";
+				for (int j = 0; j < depositHist.size(); j++){
+					deposits += depositHist.get(i).toString() + ",";
+				}
+				file.write(deposits);
+				file.newLine();
+				//output withdrawals
+				out.println("Withdrawals");
+				file.write("Withdrawals");
+				file.newLine();
+				out.println(accounts.get(i).getWithdrawalsHistory());
+				ArrayList<Double> withdrawalHist = accounts.get(i).getWithdrawalsHistory();
+				String withdrawals = "";
+				for (int j = 0; j < withdrawalHist.size(); j++){
+					withdrawals += withdrawalHist.get(i).toString() + ",";
+				}
+				file.write(withdrawals);
+			}
+			file.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Failed to output transactions files.");
+			System.exit(0);
+		}
 	}
 
 	//function to provide a nicer interface on the command line

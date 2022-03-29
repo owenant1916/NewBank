@@ -53,6 +53,8 @@ public class Account {
 		return loans;
 	}
 
+	public void addCashFromLoan(double amt) { currentBalance += amt;};
+
 	public void deposit(double depositAmt)
 	{
 		this.currentBalance += depositAmt;

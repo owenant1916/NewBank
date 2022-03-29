@@ -120,10 +120,37 @@ public class NewBank {
 		return null;
 	}
 
-	public String processLoan(double amount, String borrowerAccNum) {
+	//process functions to perform operations for client
+	public synchronized String showMyAccounts_process(User user) {
+		Customer cust = (Customer) user;
+		return cust.accountsToString();
+	}
+
+	public synchronized String depositCash_process(double depositAmt, String accountNum,
+			Customer cust) {
+		//add amount to account and also into database and register deposit transaction
+		boolean cashDeposited = cust.depositInAccount(depositAmt,accountNum);
+		if (cashDeposited) {
+			return "Cash deposited.";
+		}else{
+			return "FAIL";
+		}
+	}
+
+	public synchronized String withdrawCash_process(double withdrawalAmt, String accountNum, Customer cust) {
+		//add amount to account and also into database and register deposit transaction
+		boolean cashWithdrawn = cust.withdrawFromAccount(withdrawalAmt, accountNum);
+		if (cashWithdrawn) {
+			return "Cash withdrawn.";
+		}else{
+			return "FAIL";
+		}
+	}
+	public synchronized String Loan_process(double amount, String borrowerAccNum) {
 		Utilities utilities = new Utilities(customers); // created here for now so that it uses up-to-date customer info
 		String loanerAccNum = findLoaner(amount, borrowerAccNum); // find loaner and remove money from their account
-		utilities.findAccountByNum(borrowerAccNum).setCurrentBalance(amount); // find borrower's account and add money to it
+		//utilities.findAccountByNum(borrowerAccNum).setCurrentBalance(amount); // find borrower's account and add money to it
+		utilities.findAccountByNum(borrowerAccNum).addCashFromLoan(amount); // find borrower's account and add money to it
 		Loan newLoan = new Loan(loanerAccNum, borrowerAccNum, amount); // Create loan object with above info
 		utilities.findCustomerByAcc(loanerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
 		utilities.findCustomerByAcc(borrowerAccNum).addLoan(newLoan.getLoanId()); // Add automatically generated loan ID to accounts
@@ -149,101 +176,5 @@ public class NewBank {
 				}
 			}
 		return null;
-	}
-
-	// commands from the NewBank customer are processed in this method
-	public synchronized String processRequest(User loggedInUser, String request) {
-		Scanner myScanner = new Scanner(System.in);
-		ArrayList<Account> accounts = customers.get(loggedInUser.getUserID()).getAccounts();
-		if (loggedInUser.getUserType().equals("customer")) {
-			switch (request) {
-				//needs to be maintained in sync with request files
-				case "1":
-					return showMyAccounts(loggedInUser.getUserID());
-				case "2" : return depositCash(loggedInUser);
-				case "3" : return withdrawCash(loggedInUser);
-				case "4":
-					// User chooses an account
-					System.out.println("Select the account from which you wish to request a loan");
-					for(int i = 0; i < accounts.size(); i++) {
-						System.out.println((i + 1) + " - " + accounts.get(i).toString()); // added 1 sp
-					}
-					int account = myScanner.nextInt();
-
-					// User enters loan amount
-					System.out.println("Enter the requested loan amount");
-					Double amount = myScanner.nextDouble();
-					myScanner.close();
-					return processLoan(amount, accounts.get(account - 1).getAccountNum());
-//				case "5": repay loan
-				default:
-					return "FAIL";
-			}
-		}else if(loggedInUser.getUserType().equals("bank manager")){
-			switch (request) {
-				//needs to be maintained in sync with request files
-				//case "1": return createAccount();
-				//case "2" :return deleteAccount();
-				default:
-					return "FAIL";
-			}
-		}
-		return "FAIL";
-	}
-	
-	private String showMyAccounts(UserID customer) {
-		return (customers.get(customer).accountsToString());
-	}
-
-	private String depositCash(User customer) {
-		Scanner myScanner = new Scanner(System.in);
-
-		//ask customer to choose account
-		System.out.println("Select the account you wish to deposit cash:");
-		Customer cust = (Customer) customer;
-		ArrayList<Account> custAccounts = cust.getAccounts();
-		for(int i = 0; i < custAccounts.size(); i++) {
-			System.out.println((i + 1) + " - " + custAccounts.get(i).toString()); // added 1 sp
-		}
-		int selection = myScanner.nextInt();
-
-		//ask for deposit amount
-		System.out.println("Enter the deposit amount");
-		Double depositAmt = myScanner.nextDouble();
-		myScanner.close();
-
-		//add amount to account and also into database and register deposit transaction
-		boolean cashDeposited = cust.depositInAccount(depositAmt, custAccounts.get(selection-1).getAccountNum());
-		if (cashDeposited) {
-			return "Cash deposited.";
-		}else{
-			return "FAIL";
-		}
-	}
-
-	private String withdrawCash(User customer) {
-		Scanner myScanner = new Scanner(System.in);
-
-		//ask customer to choose account
-		System.out.println("Select the account you wish to withdraw cash from:");
-		Customer cust = (Customer) customer;
-		ArrayList<Account> custAccounts = cust.getAccounts();
-		for(int i = 0; i < custAccounts.size(); i++) {
-			System.out.println((i + 1) + " - " + custAccounts.get(i).toString()); // added 1 sp
-		}
-		int selection = myScanner.nextInt();
-
-		//ask for deposit amount
-		System.out.println("Enter the withdrawal amount");
-		Double withdrawalAmt = myScanner.nextDouble();
-		myScanner.close();
-
-		//add amount to account and also into database and register deposit transaction
-		boolean cashWithdrawn = cust.withdrawFromAccount(withdrawalAmt, custAccounts.get(selection-1).getAccountNum());
-		if (cashWithdrawn) {
-			return "Cash withdrawn.";
-		}else{
-			return "FAIL";
-		}
 	}
 }

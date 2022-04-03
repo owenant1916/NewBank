@@ -14,6 +14,13 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Scanner;
+//-------------------------------------------
+import java.io.FileNotFoundException;
+import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class NewBankClientHandler extends Thread{
 	
@@ -66,6 +73,7 @@ public class NewBankClientHandler extends Thread{
 							case "4":  Loan_Interface(loggedInUser); break;
 							//case "5" : repay loan
 							case "6": transactionStatement_Interface(loggedInUser); break;
+							case "7": changePasswordInterface(loggedInUser); break;
 				    default:
 							System.out.println("FAIL");
 						}
@@ -228,6 +236,45 @@ public class NewBankClientHandler extends Thread{
 			System.out.println("Failed to output transactions files.");
 			System.exit(0);
 		}
+	}
+
+	private void changePasswordInterface (User user){
+		out.println("Enter your password:");
+		String newPassword = myScanner.next();
+
+		List<String> list = new ArrayList<String>();
+
+		try {
+			JSONParser parser = new JSONParser();
+			JSONArray jsonArray = (JSONArray) parser.parse(new FileReader("./src/newbank/data/CustomerData"));
+
+			FileWriter file = new FileWriter("./src/newbank/data/CustomerData");
+
+			for (Object o : jsonArray) {
+				JSONObject person = (JSONObject) o;
+				String name = (String) person.get("name");
+				if (user.getName().equals(name)) {
+					person.remove("password");
+					person.put("password", newPassword);
+					list.add(person.toString());
+				} else {
+					list.add(person.toString());
+				}
+			}
+			file.write(list.toString());
+			file.flush();
+			file.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		out.println("Your password has been changed to: " + newPassword);
+
 	}
 
 	//function to provide a nicer interface on the command line

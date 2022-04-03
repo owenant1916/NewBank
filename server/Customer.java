@@ -11,6 +11,7 @@ public class Customer extends User{
 	private ArrayList<Account> accounts;
 	private ArrayList<String> loans;
 
+
 	public Customer(String name, String password, String customerID, Integer age, String address,
 			Integer income, ArrayList<Account> accounts) {
 		super(name,password, customerID);
@@ -46,6 +47,8 @@ public class Customer extends User{
 	public void addLoan(String loanId) {
 		this.loans.add(loanId);
 	}
+
+	public void removeLoan(String loanId) { this.loans.remove(loanId); }
 
 	public String getAddress(){
 		return this.address;

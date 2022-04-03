@@ -25,4 +25,6 @@ public class Loan {
     public String getBorrowerAccNum() {
         return this.borrowerAccNum;
     }
+
+    public double getLoanAmount() { return this.amount; }
 }

@@ -64,7 +64,7 @@ public class NewBankClientHandler extends Thread{
 							case "2" : depositCash_Interface(loggedInUser); break;
 							case "3" : withdrawCash_Interface(loggedInUser); break;
 							case "4":  Loan_Interface(loggedInUser); break;
-							//case "5" : repay loan
+							case "5" : Repayloan_Interface(loggedInUser); break;
 							case "6": transactionStatement_Interface(loggedInUser); break;
 				    default:
 							System.out.println("FAIL");
@@ -183,6 +183,24 @@ public class NewBankClientHandler extends Thread{
 		Double amount = myScanner.nextDouble();
 
 		String response = bank.Loan_process(amount, accounts.get(account-1).getAccountNum());
+		out.println(response);
+	}
+
+	private void Repayloan_Interface(User user) {
+		Customer cust = (Customer) user;
+		ArrayList<Account> accounts = cust.getAccounts();
+		ArrayList<String> loans = cust.getLoans();
+		out.println("Select which loan you would like to repay");
+		for (int i = 0; i < loans.size();i++) {
+			out.println((i + 1) + " - " + loans.get(i));
+		}
+		String loanToPayID = loans.get(myScanner.nextInt()-1);
+		out.println("select which account do you want to pay from");
+		for(int i = 0; i < accounts.size(); i++) {
+			out.println((i + 1) + " - " + accounts.get(i).toString());
+		}
+		String accountNumToPayFrom = accounts.get(myScanner.nextInt()-1).getAccountNum();
+		String response = bank.repayLoan_process(loanToPayID, accountNumToPayFrom);
 		out.println(response);
 	}
 

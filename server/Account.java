@@ -55,6 +55,10 @@ public class Account {
 
 	public void addCashFromLoan(double amt) { currentBalance += amt;};
 
+	public void loan_removeCash(double amount) { currentBalance-=amount; };
+
+	public void loan_addCash(double amount) { currentBalance+= amount; };
+
 	public void deposit(double depositAmt)
 	{
 		this.currentBalance += depositAmt;

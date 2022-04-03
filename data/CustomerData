@@ -27,12 +27,12 @@
   		"accounts" : ["00194762"],
   	},
   	{
-    		"name": "Ahmed",
-    		"password": "cards",
+        "name": "Ahmed",
+        "password": "cards",
 		"customer ID": "1004",
-    		"age": "29",
-    		"address": "no idea",
-    		"income": "2500",
-    		"accounts" : [],
+        "age": "29",
+        "address": "no idea",
+        "income": "2500",
+        "accounts" : ["11194765"],
   	}
 ]

@@ -64,7 +64,7 @@ public class NewBankClientHandler extends Thread{
 							case "2" : depositCash_Interface(loggedInUser); break;
 							case "3" : withdrawCash_Interface(loggedInUser); break;
 							case "4":  Loan_Interface(loggedInUser); break;
-							//case "5" : repay loan
+							case "5" : Repayloan_Interface(loggedInUser); break;
 							case "6": transactionStatement_Interface(loggedInUser); break;
 				    default:
 							System.out.println("FAIL");
@@ -184,6 +184,16 @@ public class NewBankClientHandler extends Thread{
 
 		String response = bank.Loan_process(amount, accounts.get(account-1).getAccountNum());
 		out.println(response);
+	}
+
+	private void Repayloan_Interface(User user) {
+		Customer cust = (Customer) user;
+		out.println("Select which loan you would like to repay");
+		ArrayList<String> loans = cust.getLoans();
+		//ArrayList<Loan> loans_o = cust.getLoans_o();
+		for (int i = 0; i < loans.size();i++) {
+			out.println((i + 1) + " - " + loans.get(i));
+		}
 	}
 
 	private void transactionStatement_Interface(User user){

@@ -10,6 +10,8 @@ public class Customer extends User{
 	//customer account information, accounts indexed by account number and list of associated loans
 	private ArrayList<Account> accounts;
 	private ArrayList<String> loans;
+	private ArrayList<Loan> loans_o;
+
 
 	public Customer(String name, String password, String customerID, Integer age, String address,
 			Integer income, ArrayList<Account> accounts) {
@@ -19,6 +21,7 @@ public class Customer extends User{
 		this.income = income;
 		this.accounts = accounts;
 		loans = new ArrayList<String>();
+		loans_o = new ArrayList<Loan>();
 	}
 
 	public String accountsToString() {
@@ -41,6 +44,9 @@ public class Customer extends User{
 
 	public ArrayList<String> getLoans() {
 		return loans;
+	}
+	public ArrayList<Loan> getLoans_o() {
+		return loans_o;
 	}
 
 	public void addLoan(String loanId) {

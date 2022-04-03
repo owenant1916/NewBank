@@ -161,6 +161,10 @@ public class NewBank {
 				utilities.findAccountByNum(borrowerAccNum).getCurrentBalance();
 	}
 
+	//public synchronized  String repayLoan_process(String loanID,  ) {
+
+	//}
+
 
 	// Searches for a suitable account to loan the money from
 	public String findLoaner(double amount, String borrowerAccNum) {

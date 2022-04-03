@@ -188,12 +188,18 @@ public class NewBankClientHandler extends Thread{
 
 	private void Repayloan_Interface(User user) {
 		Customer cust = (Customer) user;
-		out.println("Select which loan you would like to repay");
+		ArrayList<Account> accounts = cust.getAccounts();
 		ArrayList<String> loans = cust.getLoans();
-		//ArrayList<Loan> loans_o = cust.getLoans_o();
+		out.println("Select which loan you would like to repay");
 		for (int i = 0; i < loans.size();i++) {
 			out.println((i + 1) + " - " + loans.get(i));
 		}
+		String loanToPayID = loans.get(myScanner.nextInt()-1);
+		out.println("select which account do you want to pay from");
+		for(int i = 0; i < accounts.size(); i++) {
+			out.println((i + 1) + " - " + accounts.get(i).toString());
+		}
+		String accountNumToPayFrom = accounts.get(myScanner.nextInt()-1).getAccountNum();
 	}
 
 	private void transactionStatement_Interface(User user){

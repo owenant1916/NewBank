@@ -200,6 +200,8 @@ public class NewBankClientHandler extends Thread{
 			out.println((i + 1) + " - " + accounts.get(i).toString());
 		}
 		String accountNumToPayFrom = accounts.get(myScanner.nextInt()-1).getAccountNum();
+		String response = bank.repayLoan_process(loanToPayID, accountNumToPayFrom);
+		out.println(response);
 	}
 
 	private void transactionStatement_Interface(User user){

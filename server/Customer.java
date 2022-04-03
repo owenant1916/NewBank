@@ -48,6 +48,8 @@ public class Customer extends User{
 		this.loans.add(loanId);
 	}
 
+	public void removeLoan(String loanId) { this.loans.remove(loanId); }
+
 	public String getAddress(){
 		return this.address;
 	}

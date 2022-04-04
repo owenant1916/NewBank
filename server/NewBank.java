@@ -180,6 +180,7 @@ public class NewBank {
 		this.loanLedger.removeLoan(loanLedger.getLoan(loanID));
 		return "Success! Loan paid " + utilities.findAccountByNum(paidFromAccNum).getAccountName() + " balance is now " +
 				utilities.findAccountByNum(paidFromAccNum).getCurrentBalance();
+				
 	}
 
 

@@ -246,6 +246,7 @@ public class NewBankClientHandler extends Thread{
 		for(int i = 0; i < accounts.size(); i++) {
 			out.println((i + 1) + " - " + accounts.get(i).toString());
 		}
+		
 		String accountNumToPayFrom = accounts.get(myScanner.nextInt()-1).getAccountNum();
 		String response = bank.repayLoan_process(loanToPayID, accountNumToPayFrom);
 		out.println(response);

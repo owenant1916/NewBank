@@ -127,10 +127,7 @@ public class NewBankClientHandler extends Thread{
 
 	private void showMyAccounts_Interface(User user){
 		String response = bank.showMyAccounts_process(user);
-		String response1 = bank.showCustomerLoans_process(user);
 		out.println(response);
-		out.println("Assgined loans:");
-		out.println(response1);
 	}
 
 	private void depositCash_Interface(User user){
@@ -193,14 +190,6 @@ public class NewBankClientHandler extends Thread{
 		Customer cust = (Customer) user;
 		ArrayList<Account> accounts = cust.getAccounts();
 		ArrayList<String> loans = cust.getLoans();
-		if(accounts.size()==0) {
-			out.println("Error! Logged in user does have any registered accounts");
-			return;
-		}
-		if(loans.size()==0) {
-			out.println("Error! Logged in user does not have any assigned loans");
-			return;
-		}
 		out.println("Select which loan you would like to repay");
 		for (int i = 0; i < loans.size();i++) {
 			out.println((i + 1) + " - " + loans.get(i));

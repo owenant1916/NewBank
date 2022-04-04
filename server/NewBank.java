@@ -126,11 +126,6 @@ public class NewBank {
 		return cust.accountsToString();
 	}
 
-	public synchronized String showCustomerLoans_process (User user) {
-		Customer cust = (Customer) user;
-		return cust.customerLoansToString();
-	}
-
 	public synchronized String depositCash_process(double depositAmt, String accountNum,
 			Customer cust) {
 		//add amount to account and also into database and register deposit transaction

@@ -30,6 +30,17 @@ public class Customer extends User{
 		return s;
 	}
 
+	public String customerLoansToString() {
+		if(loans.size()==0){
+			return "No assigned loans";
+		}
+		String s = "";
+		for(String a : loans) {
+			s += a.toString();
+		}
+		return s;
+	}
+
 	public void addAccount(Account account) {
 		accounts.add(account);		
 	}

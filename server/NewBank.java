@@ -28,7 +28,7 @@ public class NewBank {
 		//populate possible requests from customer request config files
 		BufferedReader customerRequestReader = null;
 		try {
-			customerRequestReader = new BufferedReader(new FileReader("./src/newbank/testing/CustomerRequests"));
+			customerRequestReader = new BufferedReader(new FileReader("./src/newbank/interface/CustomerRequests"));
 		}catch (IOException e){
 			e.printStackTrace();
 			System.out.println("Customer request file not found.");
@@ -53,7 +53,7 @@ public class NewBank {
 		//populate possible requests from customer request config files
 		BufferedReader bankManagerRequestReader = null;
 		try {
-			bankManagerRequestReader = new BufferedReader(new FileReader("./src/newbank/testing/BankManagerRequests"));
+			bankManagerRequestReader = new BufferedReader(new FileReader("./src/newbank/interface/BankManagerRequests"));
 		}catch (IOException e){
 			e.printStackTrace();
 			System.out.println("Bank Manager request file not found.");

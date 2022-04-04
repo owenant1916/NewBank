@@ -161,6 +161,22 @@ public class NewBank {
 				utilities.findAccountByNum(borrowerAccNum).getCurrentBalance();
 	}
 
+	public synchronized  String repayLoan_process(String loanID, String paidFromAccNum) {
+		Utilities utilities = new Utilities(customers);
+		double loanAmount = loanLedger.getLoan(loanID).getLoanAmount();
+		//remove cash from account to pay for loan
+		utilities.findAccountByNum(paidFromAccNum).loan_removeCash(loanAmount);
+		//add cash to loaner account
+		utilities.findAccountByNum(loanLedger.getLoan(loanID).getLoanerAccNum()).loan_addCash(loanAmount);
+		//remove loan IDs from both customers
+		utilities.findCustomerByAcc(paidFromAccNum).removeLoan(loanID);
+		utilities.findCustomerByAcc(loanLedger.getLoan(loanID).getLoanerAccNum()).removeLoan(loanID);
+		//remove loan from ledger
+		this.loanLedger.removeLoan(loanLedger.getLoan(loanID));
+		return "Success! Loan paid " + utilities.findAccountByNum(paidFromAccNum).getAccountName() + " balance is now " +
+				utilities.findAccountByNum(paidFromAccNum).getCurrentBalance();
+	}
+
 
 	// Searches for a suitable account to loan the money from
 	public String findLoaner(double amount, String borrowerAccNum) {

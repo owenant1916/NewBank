@@ -113,14 +113,14 @@ public class NewBankClientHandler extends Thread{
 			// ask for user name
 			out.println("Enter Username");
 			//------Updated Auto-check-in code - can be reverted later-------
-			//userName = in.readLine();
-			userName = in_auto_checkin.readLine();
+			userName = in.readLine();
+			//userName = in_auto_checkin.readLine();
 			//---------------------------------------------------------------
 			// ask for password
 			out.println("Enter Password");
 			//------Updated Auto-check-in code - can be reverted later-------
-			// password = in.readLine();
-			password = in_auto_checkin.readLine();
+			password = in.readLine();
+			//password = in_auto_checkin.readLine();
 			//---------------------------------------------------------------
 			out.println("Checking Details...");
 		}catch (IOException e){

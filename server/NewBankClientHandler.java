@@ -155,8 +155,22 @@ public class NewBankClientHandler extends Thread{
 		out.println("Enter the deposit amount");
 		Double depositAmt = myScanner.nextDouble();
 
-		String response = bank.depositCash_process(depositAmt,
-				custAccounts.get(selection-1).getAccountNum(), cust);
+		//perform fraud check
+		Account acc = custAccounts.get(selection-1);
+		String response = "";
+		ArrayList<Double> depositsHist = acc.getDepositsHistory();
+		double avgDeposit = 0;
+		if (depositsHist.size() >= 12){
+			for(int i=0; i < depositsHist.size(); i++) {
+				avgDeposit += depositsHist.get(i);
+			}
+			avgDeposit = avgDeposit/(1.0 * depositsHist.size());
+		}
+		if (depositAmt > 5 * acc.getOpeningBalance() || (avgDeposit >0 && depositAmt > 5 * avgDeposit)){
+			response = "Deposit exceeds fraud threshold. Please contact Bank Manager to proceed";
+		}else{
+			response = bank.depositCash_process(depositAmt, acc.getAccountNum(), cust);
+		}
 		out.println(response);
 	}
 
@@ -170,12 +184,26 @@ public class NewBankClientHandler extends Thread{
 		}
 		int selection = myScanner.nextInt();
 
-		//ask for deposit amount
+		//ask for withdrawal amount
 		out.println("Enter the withdrawal amount");
 		Double withdrawalAmt = myScanner.nextDouble();
 
-		String response = bank.withdrawCash_process(withdrawalAmt,
-				custAccounts.get(selection-1).getAccountNum(), cust);
+		//perform fraud check
+		Account acc = custAccounts.get(selection-1);
+		String response = "";
+		ArrayList<Double> withdrawalHist = acc.getWithdrawalsHistory();
+		double avgWithdrawal = 0;
+		if (withdrawalHist.size() >= 12){
+			for(int i=0; i < withdrawalHist.size(); i++) {
+				avgWithdrawal += withdrawalHist.get(i);
+			}
+			avgWithdrawal = avgWithdrawal/ (1.0 * withdrawalHist.size());
+		}
+		if (withdrawalAmt > 5 * acc.getOpeningBalance() || (avgWithdrawal > 0 && withdrawalAmt > 5 * avgWithdrawal)){
+			response = "Withdrawal exceeds fraud threshold. Please contact Bank Manager to proceed";
+		}else{
+			response = bank.withdrawCash_process(withdrawalAmt, acc.getAccountNum(), cust);
+		}
 		out.println(response);
 	}
 

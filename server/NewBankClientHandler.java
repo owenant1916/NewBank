@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
 
 public class NewBankClientHandler extends Thread{
 	
@@ -52,6 +55,8 @@ public class NewBankClientHandler extends Thread{
 				//display initial interface
 				out.println("Log In Successful.");
 				interfaceDisplay(loggedInUser);
+				//Log user log-in
+				logUserActivty(loggedInUser);
 				//get user requests
 				while(true) {
 					String request = in.readLine();
@@ -269,5 +274,19 @@ public class NewBankClientHandler extends Thread{
 			String process = entry.getValue();
 			out.println(intKey.toString() + "." + process);
 		}
+	}
+
+	//function to log user log-in 
+	private void logUserActivty(User user) throws IOException {
+		ZonedDateTime timeStamp;
+		timeStamp = ZonedDateTime.now(ZoneId.of("GMT"));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss z");
+		String formattedString = timeStamp.format(formatter);
+		String logLine = "";
+		logLine+=formattedString + " UserID:" + user.getUserID().getKey()+ " Username:" + user.getName() ;
+
+		BufferedWriter writer = new BufferedWriter(new FileWriter("./src/newbank/data/LogInData", true));
+		writer.write(logLine+"\n");
+		writer.close();
 	}
 }

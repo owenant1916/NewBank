@@ -1,29 +1,20 @@
 package newbank.server;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-//------Auto-check-in code - can be deleted later-------
-import java.io.FileReader;
-//------------------------------------------------------
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Scanner;
-//-------------------------------------------
-import java.io.FileNotFoundException;
-import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.io.*;
+import java.net.Socket;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.ZoneId;
+import java.util.*;
+
+//------Auto-check-in code - can be deleted later-------
+//------------------------------------------------------
+//-------------------------------------------
 
 public class NewBankClientHandler extends Thread{
 	
@@ -87,6 +78,7 @@ public class NewBankClientHandler extends Thread{
 							//needs to be maintained in sync with request files
 							//case "1": return createAccount_Interface(); break;
 							//case "2" :return deleteAccount_Interface(); break;
+							case "3": viewLogInData_Interface(); break;
 							default:
 								System.out.println("FAIL");
 						}
@@ -251,7 +243,6 @@ public class NewBankClientHandler extends Thread{
 		for(int i = 0; i < accounts.size(); i++) {
 			out.println((i + 1) + " - " + accounts.get(i).toString());
 		}
-		
 		String accountNumToPayFrom = accounts.get(myScanner.nextInt()-1).getAccountNum();
 		String response = bank.repayLoan_process(loanToPayID, accountNumToPayFrom);
 		out.println(response);
@@ -369,10 +360,27 @@ public class NewBankClientHandler extends Thread{
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss z");
 		String formattedString = timeStamp.format(formatter);
 		String logLine = "";
-		logLine+=formattedString + " UserID:" + user.getUserID().getKey()+ " Username:" + user.getName() ;
+		logLine+=formattedString + " UserID:" + user.getUserID().getKey()+ " Username:" + user.getName() + " UserType:" + user.getUserType();
 
 		BufferedWriter writer = new BufferedWriter(new FileWriter("./src/newbank/data/LogInData", true));
 		writer.write(logLine+"\n");
 		writer.close();
 	}
+
+	//view log in data interface
+	private void viewLogInData_Interface() {
+		try {
+			Scanner myReader = new Scanner(new File("./src/newbank/data/LogInData"));
+			while (myReader.hasNextLine()) {
+				String data = myReader.nextLine();
+				out.println(data);
+				System.out.println(data);
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+	}
+
 }

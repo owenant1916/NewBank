@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public class NewBank {
 	
@@ -180,7 +179,6 @@ public class NewBank {
 		this.loanLedger.removeLoan(loanLedger.getLoan(loanID));
 		return "Success! Loan paid " + utilities.findAccountByNum(paidFromAccNum).getAccountName() + " balance is now " +
 				utilities.findAccountByNum(paidFromAccNum).getCurrentBalance();
-				
 	}
 
 

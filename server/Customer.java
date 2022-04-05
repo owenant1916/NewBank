@@ -26,7 +26,6 @@ public class Customer extends User{
 		String s = "";
 		for(Account a : accounts) {
 			s += a.toString();
-			
 		}
 		return s;
 	}

@@ -4,3 +4,4 @@
 (4,request loan)
 (5,repay loan)
 (6,transaction statement)
+(7,change password)

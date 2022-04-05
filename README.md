@@ -19,4 +19,6 @@ Next you need to register dependency on this .jar file with your intelliJ projec
 6. select "Jars or directories" and navigate to the jar file, select it and press ok
 7. Press apply in bottom right hand corner
 
+Additionally, the JUnit testing framework for the code is dependent on junit-4.10.jar. This can be downloaded from from http://www.junit.org, and dependency on this library can be reigstered in exactky the same manner as above.
+
 The code will now compile and execute

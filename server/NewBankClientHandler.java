@@ -14,6 +14,13 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Scanner;
+//-------------------------------------------
+import java.io.FileNotFoundException;
+import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class NewBankClientHandler extends Thread{
 	
@@ -66,6 +73,7 @@ public class NewBankClientHandler extends Thread{
 							case "4":  Loan_Interface(loggedInUser); break;
 							case "5" : Repayloan_Interface(loggedInUser); break;
 							case "6": transactionStatement_Interface(loggedInUser); break;
+							case "7": changePasswordInterface(loggedInUser); break;
 				    default:
 							System.out.println("FAIL");
 						}
@@ -128,6 +136,9 @@ public class NewBankClientHandler extends Thread{
 	private void showMyAccounts_Interface(User user){
 		String response = bank.showMyAccounts_process(user);
 		out.println(response);
+		String response1 = bank.showCustomerLoans_process(user);
+		out.println("Assgined loans:");
+		out.println(response1);
 	}
 
 	private void depositCash_Interface(User user){
@@ -190,6 +201,14 @@ public class NewBankClientHandler extends Thread{
 		Customer cust = (Customer) user;
 		ArrayList<Account> accounts = cust.getAccounts();
 		ArrayList<String> loans = cust.getLoans();
+		if(accounts.size()==0) {
+			out.println("Error! Logged in user does have any registered accounts");
+			return;
+		}
+		if(loans.size()==0) {
+			out.println("Error! Logged in user does not have any assigned loans");
+			return;
+		}
 		out.println("Select which loan you would like to repay");
 		for (int i = 0; i < loans.size();i++) {
 			out.println((i + 1) + " - " + loans.get(i));
@@ -246,6 +265,45 @@ public class NewBankClientHandler extends Thread{
 			System.out.println("Failed to output transactions files.");
 			System.exit(0);
 		}
+	}
+
+	private void changePasswordInterface (User user){
+		out.println("Enter your password:");
+		String newPassword = myScanner.next();
+
+		List<String> list = new ArrayList<String>();
+
+		try {
+			JSONParser parser = new JSONParser();
+			JSONArray jsonArray = (JSONArray) parser.parse(new FileReader("./src/newbank/data/CustomerData"));
+
+			FileWriter file = new FileWriter("./src/newbank/data/CustomerData");
+
+			for (Object o : jsonArray) {
+				JSONObject person = (JSONObject) o;
+				String name = (String) person.get("name");
+				if (user.getName().equals(name)) {
+					person.remove("password");
+					person.put("password", newPassword);
+					list.add(person.toString());
+				} else {
+					list.add(person.toString());
+				}
+			}
+			file.write(list.toString());
+			file.flush();
+			file.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		out.println("Your password has been changed to: " + newPassword);
+
 	}
 
 	//function to provide a nicer interface on the command line

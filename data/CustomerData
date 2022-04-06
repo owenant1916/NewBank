@@ -10,8 +10,8 @@
 	},
 	{
 		"name": "Jack",
-		"password": "nihao",	
-		"customer ID": "1002",	
+		"password": "nihao",
+		"customer ID": "1002",
 		"age": "26",
 		"address": "somewhere in china",
 		"income": "100000000",
@@ -34,5 +34,14 @@
         "address": "no idea",
         "income": "2500",
         "accounts" : ["11194765"],
+  	},
+	{
+        "name": "DummyTestUser",
+        "password": "pa55word",
+	"customer ID": "999",
+        "age": "1000",
+        "address": "Ether",
+        "income": "10000000",
+        "accounts" : ["999999"],
   	}
 ]

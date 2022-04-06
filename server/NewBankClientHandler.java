@@ -14,10 +14,21 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Scanner;
+//-------------------------------------------
+import java.io.FileNotFoundException;
+import java.util.List;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import java.io.*;
+import java.net.Socket;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.ZoneId;
-
+import java.util.*;
 public class NewBankClientHandler extends Thread{
 	
 	private NewBank bank;
@@ -71,6 +82,7 @@ public class NewBankClientHandler extends Thread{
 							case "4":  Loan_Interface(loggedInUser); break;
 							case "5" : Repayloan_Interface(loggedInUser); break;
 							case "6": transactionStatement_Interface(loggedInUser); break;
+							case "7": changePasswordInterface(loggedInUser); break;
 				    default:
 							System.out.println("FAIL");
 						}
@@ -79,6 +91,7 @@ public class NewBankClientHandler extends Thread{
 							//needs to be maintained in sync with request files
 							//case "1": return createAccount_Interface(); break;
 							//case "2" :return deleteAccount_Interface(); break;
+							case "3": viewLogInData_Interface(); break;
 							default:
 								System.out.println("FAIL");
 						}
@@ -110,14 +123,14 @@ public class NewBankClientHandler extends Thread{
 			// ask for user name
 			out.println("Enter Username");
 			//------Updated Auto-check-in code - can be reverted later-------
-			//userName = in.readLine();
-			userName = in_auto_checkin.readLine();
+			userName = in.readLine();
+			//userName = in_auto_checkin.readLine();
 			//---------------------------------------------------------------
 			// ask for password
 			out.println("Enter Password");
 			//------Updated Auto-check-in code - can be reverted later-------
-			// password = in.readLine();
-			password = in_auto_checkin.readLine();
+			password = in.readLine();
+			//password = in_auto_checkin.readLine();
 			//---------------------------------------------------------------
 			out.println("Checking Details...");
 		}catch (IOException e){
@@ -133,6 +146,9 @@ public class NewBankClientHandler extends Thread{
 	private void showMyAccounts_Interface(User user){
 		String response = bank.showMyAccounts_process(user);
 		out.println(response);
+		String response1 = bank.showCustomerLoans_process(user);
+		out.println("Assgined loans:");
+		out.println(response1);
 	}
 
 	private void depositCash_Interface(User user){
@@ -149,8 +165,22 @@ public class NewBankClientHandler extends Thread{
 		out.println("Enter the deposit amount");
 		Double depositAmt = myScanner.nextDouble();
 
-		String response = bank.depositCash_process(depositAmt,
-				custAccounts.get(selection-1).getAccountNum(), cust);
+		//perform fraud check
+		Account acc = custAccounts.get(selection-1);
+		String response = "";
+		ArrayList<Double> depositsHist = acc.getDepositsHistory();
+		double avgDeposit = 0;
+		if (depositsHist.size() >= 12){
+			for(int i=0; i < depositsHist.size(); i++) {
+				avgDeposit += depositsHist.get(i);
+			}
+			avgDeposit = avgDeposit/(1.0 * depositsHist.size());
+		}
+		if (depositAmt > 5 * acc.getOpeningBalance() || (avgDeposit >0 && depositAmt > 5 * avgDeposit)){
+			response = "Deposit exceeds fraud threshold. Please contact Bank Manager to proceed";
+		}else{
+			response = bank.depositCash_process(depositAmt, acc.getAccountNum(), cust);
+		}
 		out.println(response);
 	}
 
@@ -164,12 +194,26 @@ public class NewBankClientHandler extends Thread{
 		}
 		int selection = myScanner.nextInt();
 
-		//ask for deposit amount
+		//ask for withdrawal amount
 		out.println("Enter the withdrawal amount");
 		Double withdrawalAmt = myScanner.nextDouble();
 
-		String response = bank.withdrawCash_process(withdrawalAmt,
-				custAccounts.get(selection-1).getAccountNum(), cust);
+		//perform fraud check
+		Account acc = custAccounts.get(selection-1);
+		String response = "";
+		ArrayList<Double> withdrawalHist = acc.getWithdrawalsHistory();
+		double avgWithdrawal = 0;
+		if (withdrawalHist.size() >= 12){
+			for(int i=0; i < withdrawalHist.size(); i++) {
+				avgWithdrawal += withdrawalHist.get(i);
+			}
+			avgWithdrawal = avgWithdrawal/ (1.0 * withdrawalHist.size());
+		}
+		if (withdrawalAmt > 5 * acc.getOpeningBalance() || (avgWithdrawal > 0 && withdrawalAmt > 5 * avgWithdrawal)){
+			response = "Withdrawal exceeds fraud threshold. Please contact Bank Manager to proceed";
+		}else{
+			response = bank.withdrawCash_process(withdrawalAmt, acc.getAccountNum(), cust);
+		}
 		out.println(response);
 	}
 
@@ -254,6 +298,45 @@ public class NewBankClientHandler extends Thread{
 		}
 	}
 
+	private void changePasswordInterface (User user){
+		out.println("Enter your password:");
+		String newPassword = myScanner.next();
+
+		List<String> list = new ArrayList<String>();
+
+		try {
+			JSONParser parser = new JSONParser();
+			JSONArray jsonArray = (JSONArray) parser.parse(new FileReader("./src/newbank/data/CustomerData"));
+
+			FileWriter file = new FileWriter("./src/newbank/data/CustomerData");
+
+			for (Object o : jsonArray) {
+				JSONObject person = (JSONObject) o;
+				String name = (String) person.get("name");
+				if (user.getName().equals(name)) {
+					person.remove("password");
+					person.put("password", newPassword);
+					list.add(person.toString());
+				} else {
+					list.add(person.toString());
+				}
+			}
+			file.write(list.toString());
+			file.flush();
+			file.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		out.println("Your password has been changed to: " + newPassword);
+
+	}
+
 	//function to provide a nicer interface on the command line
 	private void interfaceDisplay(User user){
 		out.println("Welcome " + user.getName() + " to New Bank!");
@@ -283,10 +366,27 @@ public class NewBankClientHandler extends Thread{
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss z");
 		String formattedString = timeStamp.format(formatter);
 		String logLine = "";
-		logLine+=formattedString + " UserID:" + user.getUserID().getKey()+ " Username:" + user.getName() ;
+		logLine+=formattedString + " UserID:" + user.getUserID().getKey()+ " Username:" + user.getName() + " UserType:" + user.getUserType();
 
 		BufferedWriter writer = new BufferedWriter(new FileWriter("./src/newbank/data/LogInData", true));
 		writer.write(logLine+"\n");
 		writer.close();
 	}
+
+	//view log in data interface
+	private void viewLogInData_Interface() {
+		try {
+			Scanner myReader = new Scanner(new File("./src/newbank/data/LogInData"));
+			while (myReader.hasNextLine()) {
+				String data = myReader.nextLine();
+				out.println(data);
+				System.out.println(data);
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+	}
+
 }

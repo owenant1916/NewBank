@@ -89,7 +89,7 @@ public class NewBankClientHandler extends Thread{
 					}else if(loggedInUser.getUserType().equals("bank manager")){
 						switch (request) {
 							//needs to be maintained in sync with request files
-							//case "1": return createAccount_Interface(); break;
+							case "1": createCustAcc_Interface(); break;
 							//case "2" :return deleteAccount_Interface(); break;
 							case "3": viewLogInData_Interface(); break;
 							default:
@@ -395,6 +395,35 @@ public class NewBankClientHandler extends Thread{
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
+	}
+
+	private void createCustAcc_Interface() {
+		ArrayList<String> accounts = new ArrayList<String>();
+		String AccNumInput;
+
+		out.println("Please enter the following new account details-");
+		out.println("name:");
+		String name  = myScanner.next();
+		out.println("password:");
+		String password  = myScanner.next();
+		out.println("customer ID:");
+		String customerID  = myScanner.next();	
+		out.println("age");
+		String age  = myScanner.next();
+		out.println("address:");
+		String address  = myScanner.next();
+		out.println("income:");
+		String income  = myScanner.next();
+		out.println("accounts:");
+		out.println("Enter account numbers on seperate lines, once all number have been enter please press ENTER an empty line");
+		AccNumInput = myScanner.nextLine();
+		while(true) {
+			AccNumInput = myScanner.nextLine();
+			if (AccNumInput.isEmpty()) {
+				break;
+			}
+		}
+		out.println("all accounts assigned to cusotmer account");
 	}
 
 }

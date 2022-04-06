@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class NewBank {
 	
@@ -123,6 +124,11 @@ public class NewBank {
 	public synchronized String showMyAccounts_process(User user) {
 		Customer cust = (Customer) user;
 		return cust.accountsToString();
+	}
+
+	public synchronized String showCustomerLoans_process (User user) {
+		Customer cust = (Customer) user;
+		return cust.customerLoansToString();
 	}
 
 	public synchronized String depositCash_process(double depositAmt, String accountNum,

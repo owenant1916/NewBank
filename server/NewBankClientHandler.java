@@ -22,6 +22,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.*;
+import java.net.Socket;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
+import java.util.*;
 public class NewBankClientHandler extends Thread{
 	
 	private NewBank bank;
@@ -59,6 +66,8 @@ public class NewBankClientHandler extends Thread{
 				//display initial interface
 				out.println("Log In Successful.");
 				interfaceDisplay(loggedInUser);
+				//Log user log-in
+				logUserActivty(loggedInUser);
 				//get user requests
 				while(true) {
 					String request = in.readLine();
@@ -82,6 +91,7 @@ public class NewBankClientHandler extends Thread{
 							//needs to be maintained in sync with request files
 							//case "1": return createAccount_Interface(); break;
 							//case "2" :return deleteAccount_Interface(); break;
+							case "3": viewLogInData_Interface(); break;
 							default:
 								System.out.println("FAIL");
 						}
@@ -246,6 +256,7 @@ public class NewBankClientHandler extends Thread{
 		for(int i = 0; i < accounts.size(); i++) {
 			out.println((i + 1) + " - " + accounts.get(i).toString());
 		}
+		
 		String accountNumToPayFrom = accounts.get(myScanner.nextInt()-1).getAccountNum();
 		String response = bank.repayLoan_process(loanToPayID, accountNumToPayFrom);
 		out.println(response);
@@ -355,4 +366,35 @@ public class NewBankClientHandler extends Thread{
 			out.println(intKey.toString() + "." + process);
 		}
 	}
+
+	//function to log user log-in 
+	private void logUserActivty(User user) throws IOException {
+		ZonedDateTime timeStamp;
+		timeStamp = ZonedDateTime.now(ZoneId.of("GMT"));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss z");
+		String formattedString = timeStamp.format(formatter);
+		String logLine = "";
+		logLine+=formattedString + " UserID:" + user.getUserID().getKey()+ " Username:" + user.getName() + " UserType:" + user.getUserType();
+
+		BufferedWriter writer = new BufferedWriter(new FileWriter("./src/newbank/data/LogInData", true));
+		writer.write(logLine+"\n");
+		writer.close();
+	}
+
+	//view log in data interface
+	private void viewLogInData_Interface() {
+		try {
+			Scanner myReader = new Scanner(new File("./src/newbank/data/LogInData"));
+			while (myReader.hasNextLine()) {
+				String data = myReader.nextLine();
+				out.println(data);
+				System.out.println(data);
+			}
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+	}
+
 }

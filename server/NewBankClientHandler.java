@@ -403,18 +403,6 @@ public class NewBankClientHandler extends Thread{
 		String address  = myScanner.next();
 		out.println("income:");
 		String income  = myScanner.next();
-		out.println("accounts:");
-		out.println("Enter account numbers on seperate lines, once all numbers have been entered please enter an empty line to confirm");
-		AccNumInput = myScanner.nextLine();
-		while(true) {
-			if (AccNumInput.equals(".")) {
-				break;
-			}
-			AccNumInput = myScanner.nextLine();
-			accounts.add(AccNumInput);
-			accounts_obj.add(new Account("init", AccNumInput, 0, 0, initAccDeposits, initAccWithdrawals ));
-		}
-		out.println("all accounts assigned to customer account");
 
 		Customer newCust = new Customer(name, password, customerID, Integer.parseInt(age),address, Integer.parseInt(income), accounts_obj);
 		JSONObject newCust_obj = new JSONObject();

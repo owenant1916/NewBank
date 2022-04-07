@@ -3,6 +3,8 @@ package newbank.server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utilities {
     private HashMap<UserID,Customer> customers;
@@ -35,5 +37,16 @@ public class Utilities {
         System.out.println("This account does not exist.");
         return null;
     };
+
+    public boolean passwordChecker(String newPassword){
+        Pattern pattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$");
+        Matcher matcher = pattern.matcher(newPassword);
+        boolean matchFound = matcher.find();
+        if(matchFound) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 }

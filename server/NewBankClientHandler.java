@@ -29,6 +29,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class NewBankClientHandler extends Thread{
 	
 	private NewBank bank;
@@ -307,15 +310,27 @@ public class NewBankClientHandler extends Thread{
 	}
 
 	private void changePasswordInterface (User user){
-		out.println("Enter your password:");
-		String newPassword = myScanner.next();
+		out.println("Enter your new password:");
 
+        //ensure the new password is secure
+		Pattern pattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$");
+		String newPassword = myScanner.next();
+		Matcher matcher = pattern.matcher(newPassword);
+		boolean matchFound = matcher.find();
+
+		while (!matchFound){
+			out.println("A secure password must contain at least 8 characters and at least 1 number and 1 letter. Please re-enter your new password.");
+			newPassword = myScanner.next();
+			matcher = pattern.matcher(newPassword);
+			matchFound = matcher.find();
+		}
+
+		//replace the old password with the new password in the CustomerData file
 		List<String> list = new ArrayList<String>();
 
 		try {
 			JSONParser parser = new JSONParser();
 			JSONArray jsonArray = (JSONArray) parser.parse(new FileReader("./src/newbank/data/CustomerData"));
-
 			FileWriter file = new FileWriter("./src/newbank/data/CustomerData");
 
 			for (Object o : jsonArray) {

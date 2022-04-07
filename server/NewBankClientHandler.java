@@ -426,7 +426,9 @@ public class NewBankClientHandler extends Thread{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
 
+		out.println("Success! Customer Account saved to database");
+
+	}
 
 }

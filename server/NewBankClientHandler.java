@@ -1,22 +1,5 @@
 package newbank.server;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-//------Auto-check-in code - can be deleted later-------
-import java.io.FileReader;
-//------------------------------------------------------
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Scanner;
-//-------------------------------------------
-import java.io.FileNotFoundException;
-import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -27,7 +10,6 @@ import java.net.Socket;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -92,7 +74,7 @@ public class NewBankClientHandler extends Thread{
 					}else if(loggedInUser.getUserType().equals("bank manager")){
 						switch (request) {
 							//needs to be maintained in sync with request files
-							//case "1": return createAccount_Interface(); break;
+							case "1": createCustAcc_Interface(); break;
 							//case "2" :return deleteAccount_Interface(); break;
 							case "3": viewLogInData_Interface(); break;
 							default:
@@ -104,7 +86,7 @@ public class NewBankClientHandler extends Thread{
 			else {
 				out.println("Log In Failed");
 			}
-		} catch (IOException e) {
+		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
 		finally {
@@ -410,6 +392,54 @@ public class NewBankClientHandler extends Thread{
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
+	}
+
+	private void createCustAcc_Interface() throws IOException, ParseException {
+		ArrayList<String> accounts = new ArrayList<String>();
+		ArrayList<Account> accounts_obj = new ArrayList<Account>();
+		ArrayList<Double> initAccWithdrawals = new ArrayList<Double>();
+		ArrayList<Double> initAccDeposits = new ArrayList<Double>();
+		String AccNumInput;
+
+		out.println("Please enter the following new account details-");
+		out.println("name:");
+		String name  = myScanner.next();
+		out.println("password:");
+		String password  = myScanner.next();
+		out.println("customer ID:");
+		String customerID  = myScanner.next();
+		out.println("age");
+		String age  = myScanner.next();
+		out.println("address:");
+		String address  = myScanner.next();
+		out.println("income:");
+		String income  = myScanner.next();
+
+		Customer newCust = new Customer(name, password, customerID, Integer.parseInt(age),address, Integer.parseInt(income), accounts_obj);
+		JSONObject newCust_obj = new JSONObject();
+		newCust_obj.put("name", name);
+		newCust_obj.put("password", password);
+		newCust_obj.put("customer ID", customerID);
+		newCust_obj.put("age", age);
+		newCust_obj.put("address", address);
+		newCust_obj.put("income",income);
+		newCust_obj.put("accounts", accounts);
+		JSONParser jsonParser = new JSONParser();
+		JSONArray a = (JSONArray) jsonParser.parse(new FileReader("./src/newbank/data/CustomerData"));   // reading the file and creating a json array of it.
+
+		a.add(newCust_obj);   // adding your created object into the array
+
+		// writing the JSONObject into a file(info.json)
+		try {
+			FileWriter fileWriter = new FileWriter("./src/newbank/data/CustomerData");         // writing back to the file
+			fileWriter.write(a.toJSONString());
+			fileWriter.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		out.println("Success! Customer Account saved to database");
+
 	}
 
 }
